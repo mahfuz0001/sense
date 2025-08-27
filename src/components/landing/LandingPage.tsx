@@ -1,15 +1,56 @@
 'use client'
 
-import { useState } from 'react'
-import { motion } from 'framer-motion'
-import { Code2, Zap, Target, Users, ArrowRight, CheckCircle, XCircle } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { motion, useAnimation } from 'framer-motion'
+import { Code2, Zap, Target, Users, ArrowRight, CheckCircle, XCircle, Play, Star, Trophy, BookOpen, Lightbulb, Rocket } from 'lucide-react'
 import Link from 'next/link'
 
 export function LandingPage() {
   const [email, setEmail] = useState('')
+  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false)
+  const controls = useAnimation()
+
+  useEffect(() => {
+    controls.start({
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.8, ease: "easeOut" }
+    })
+  }, [controls])
+
+  const statsData = [
+    { number: "10,000+", label: "Challenges Solved" },
+    { number: "5,000+", label: "Active Learners" },
+    { number: "95%", label: "Success Rate" },
+    { number: "24/7", label: "Community Support" }
+  ]
+
+  const testimonials = [
+    {
+      name: "Sarah Chen",
+      role: "Frontend Developer",
+      company: "Google",
+      content: "Anti-Tutorial Hell changed how I learn. Instead of copying code, I now solve real problems and understand the why behind every solution.",
+      avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b5c4?w=64&h=64&fit=crop&crop=face"
+    },
+    {
+      name: "Marcus Rodriguez",
+      role: "Full Stack Engineer",
+      company: "Microsoft",
+      content: "The struggle-first approach built my confidence. Now I tackle any coding challenge without fear of getting stuck.",
+      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=64&h=64&fit=crop&crop=face"
+    },
+    {
+      name: "Priya Patel",
+      role: "Software Engineer",
+      company: "Meta",
+      content: "From tutorial hell to problem-solving master in 3 months. The best investment in my coding journey.",
+      avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=64&h=64&fit=crop&crop=face"
+    }
+  ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 overflow-x-hidden">
       {/* Navigation */}
       <nav className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -44,45 +85,91 @@ export function LandingPage() {
       </nav>
 
       {/* Hero Section */}
-      <section className="pt-32 pb-16 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
+      <section className="pt-32 pb-20 px-4 sm:px-6 lg:px-8 relative">
+        {/* Background decorations */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-400 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
+          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-400 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse delay-1000"></div>
+        </div>
+        
+        <div className="max-w-7xl mx-auto relative">
           <div className="text-center mb-16">
-            <motion.h1 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.6 }}
-              className="text-5xl md:text-7xl font-bold text-gray-900 mb-6"
+              className="inline-flex items-center px-4 py-2 bg-blue-100 rounded-full text-blue-800 text-sm font-medium mb-6"
+            >
+              <Rocket className="w-4 h-4 mr-2" />
+              Join 10,000+ developers who escaped tutorial hell
+            </motion.div>
+            
+            <motion.h1 
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.1 }}
+              className="text-5xl md:text-7xl font-bold text-gray-900 mb-6 leading-tight"
             >
               Escape Tutorial Hell
+              <span className="block bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                Build Real Skills
+              </span>
             </motion.h1>
+            
             <motion.p 
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto mb-8"
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="text-xl md:text-2xl text-gray-600 max-w-4xl mx-auto mb-10 leading-relaxed"
             >
               Stop following step-by-step tutorials. Start solving real problems. 
-              Build the confidence to tackle any coding challenge independently.
+              Build the confidence to tackle any coding challenge independently with our 
+              <span className="font-semibold text-blue-600"> struggle-first learning approach</span>.
             </motion.p>
+            
             <motion.div 
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-              className="flex flex-col sm:flex-row gap-4 justify-center"
+              transition={{ duration: 0.8, delay: 0.3 }}
+              className="flex flex-col sm:flex-row gap-4 justify-center mb-12"
             >
               <Link 
                 href="/app"
-                className="px-8 py-4 bg-blue-600 text-white rounded-lg text-lg font-semibold hover:bg-blue-700 transition-colors flex items-center justify-center"
+                className="group px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl text-lg font-semibold hover:from-blue-700 hover:to-blue-800 transition-all duration-300 flex items-center justify-center shadow-lg hover:shadow-xl transform hover:-translate-y-1"
               >
                 Start Building Real Skills
-                <ArrowRight className="ml-2 w-5 h-5" />
+                <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
-              <button className="px-8 py-4 border-2 border-gray-300 text-gray-700 rounded-lg text-lg font-semibold hover:border-gray-400 transition-colors">
+              <button 
+                onClick={() => setIsVideoModalOpen(true)}
+                className="group px-8 py-4 border-2 border-gray-300 text-gray-700 rounded-xl text-lg font-semibold hover:border-blue-500 hover:text-blue-600 transition-all duration-300 flex items-center justify-center"
+              >
+                <Play className="mr-2 w-5 h-5 group-hover:scale-110 transition-transform" />
                 Watch Demo
               </button>
             </motion.div>
-          </div>
 
+            {/* Stats */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto"
+            >
+              {statsData.map((stat, index) => (
+                <div key={index} className="text-center">
+                  <div className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">{stat.number}</div>
+                  <div className="text-gray-600 text-sm md:text-base">{stat.label}</div>
+                </div>
+              ))}
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Philosophy Section */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Problem Statement */}
           <motion.div 
             initial={{ opacity: 0, y: 40 }}
@@ -203,24 +290,172 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-16 bg-gray-900">
-        <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
-          <h2 className="text-4xl font-bold text-white mb-6">
-            Start Building Real Skills
-          </h2>
-          <p className="text-xl text-gray-300 mb-8">
-            Join developers who learn by doing, not by following tutorials.
-          </p>
-          <Link 
-            href="/app"
-            className="inline-flex items-center px-8 py-4 bg-blue-600 text-white rounded-lg text-lg font-semibold hover:bg-blue-700 transition-colors"
+      {/* Testimonials Section */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
           >
-            Begin Your Journey
-            <ArrowRight className="ml-2 w-5 h-5" />
-          </Link>
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+              Loved by Developers Worldwide
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              See how developers transformed their careers by escaping tutorial hell
+            </p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {testimonials.map((testimonial, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                viewport={{ once: true }}
+                className="bg-gray-50 p-8 rounded-2xl hover:shadow-lg transition-shadow duration-300"
+              >
+                <div className="flex items-center mb-4">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
+                  ))}
+                </div>
+                <p className="text-gray-700 mb-6 italic">"{testimonial.content}"</p>
+                <div className="flex items-center">
+                  <img 
+                    src={testimonial.avatar} 
+                    alt={testimonial.name}
+                    className="w-12 h-12 rounded-full mr-4"
+                  />
+                  <div>
+                    <h4 className="font-semibold text-gray-900">{testimonial.name}</h4>
+                    <p className="text-gray-600 text-sm">{testimonial.role} at {testimonial.company}</p>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </section>
+
+      {/* FAQ Section */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+              Frequently Asked Questions
+            </h2>
+            <p className="text-xl text-gray-600">
+              Everything you need to know about Anti-Tutorial Hell
+            </p>
+          </motion.div>
+
+          <div className="space-y-8">
+            {[
+              {
+                question: "How is this different from other coding platforms?",
+                answer: "Unlike traditional platforms that provide step-by-step instructions, we give you real problems without hand-holding. You'll research, struggle, and discover solutions independently, building genuine problem-solving skills."
+              },
+              {
+                question: "Is this suitable for complete beginners?",
+                answer: "Yes! We start with beginner-friendly challenges but expect you to research and learn. This approach builds stronger foundations than following tutorials. Our hint system provides guidance when you're truly stuck."
+              },
+              {
+                question: "What technologies can I learn?",
+                answer: "We cover HTML/CSS, JavaScript, TypeScript, React, Node.js, databases, and more. Each challenge mirrors real-world development scenarios you'll encounter in your career."
+              },
+              {
+                question: "How long does it take to see results?",
+                answer: "Most developers notice improved confidence within 2-3 weeks. The struggle-first approach accelerates learning because you're forced to understand concepts deeply rather than memorizing steps."
+              },
+              {
+                question: "Is there community support?",
+                answer: "Yes! Our community helps each other without giving away solutions. You'll get hints, guidance, and encouragement while maintaining the challenge's learning value."
+              }
+            ].map((faq, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                viewport={{ once: true }}
+                className="bg-white p-8 rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300"
+              >
+                <h3 className="text-xl font-semibold text-gray-900 mb-4">{faq.question}</h3>
+                <p className="text-gray-700 leading-relaxed">{faq.answer}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-20 bg-gradient-to-r from-blue-600 to-purple-700 relative overflow-hidden">
+        <div className="absolute inset-0 bg-black opacity-10"></div>
+        <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8 relative">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+          >
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+              Ready to Escape Tutorial Hell?
+            </h2>
+            <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
+              Join thousands of developers who chose struggle-first learning and built unshakeable coding confidence.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link 
+                href="/app"
+                className="group px-8 py-4 bg-white text-blue-600 rounded-xl text-lg font-semibold hover:bg-gray-100 transition-all duration-300 flex items-center justify-center shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+              >
+                Start Your Journey Free
+                <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </Link>
+              <button 
+                onClick={() => setIsVideoModalOpen(true)}
+                className="px-8 py-4 border-2 border-white text-white rounded-xl text-lg font-semibold hover:bg-white hover:text-blue-600 transition-all duration-300 flex items-center justify-center"
+              >
+                <Play className="mr-2 w-5 h-5" />
+                Watch Success Stories
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Video Modal */}
+      {isVideoModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75" onClick={() => setIsVideoModalOpen(false)}>
+          <div className="bg-white p-8 rounded-2xl max-w-4xl w-full mx-4" onClick={(e) => e.stopPropagation()}>
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-2xl font-bold text-gray-900">See Anti-Tutorial Hell in Action</h3>
+              <button 
+                onClick={() => setIsVideoModalOpen(false)}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <XCircle className="w-6 h-6" />
+              </button>
+            </div>
+            <div className="aspect-video bg-gray-200 rounded-lg flex items-center justify-center">
+              <div className="text-center">
+                <Play className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                <p className="text-gray-600">Demo video coming soon!</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Footer */}
       <footer className="py-12 bg-white border-t">

@@ -1,0 +1,328 @@
+'use client'
+
+import { useState, useEffect } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Code2, User, LogOut, Settings, Shield, Play, Clock, Target, Award, BookOpen, Lightbulb, Zap, TrendingUp, Calendar, Users, Star, Trophy, CheckCircle, XCircle, ArrowRight } from 'lucide-react'
+import Link from 'next/link'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Progress } from '@/components/ui/progress'
+import { AuthProvider, useAuth } from '@/hooks/useAuth'
+import { AuthModal } from '@/components/auth/AuthModal'
+import { mockChallenges as challenges } from '@/data/mockData'
+
+function AppContent() {
+  const { user, loading, signOut } = useAuth()
+  const [authModalOpen, setAuthModalOpen] = useState(false)
+  const [authMode, setAuthMode] = useState<'login' | 'signup'>('login')
+  const [selectedCategory, setSelectedCategory] = useState<string>('all')
+  const [searchQuery, setSearchQuery] = useState('')
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <motion.div 
+            animate={{ rotate: 360 }} 
+            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+            className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"
+          ></motion.div>
+          <p className="text-gray-600">Loading Anti-Tutorial Hell...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+        {/* Navigation */}
+        <nav className="bg-white border-b sticky top-0 z-50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center justify-between h-16">
+              <Link href="/" className="flex items-center space-x-3">
+                <div className="p-2 bg-blue-600 rounded-lg">
+                  <Code2 className="w-6 h-6 text-white" />
+                </div>
+                <span className="text-xl font-bold text-gray-900">Anti-Tutorial Hell</span>
+              </Link>
+              
+              <div className="flex items-center space-x-4">
+                <Button 
+                  variant="outline"
+                  onClick={() => {
+                    setAuthMode('login')
+                    setAuthModalOpen(true)
+                  }}
+                >
+                  Sign In
+                </Button>
+                <Button onClick={() => {
+                  setAuthMode('signup')
+                  setAuthModalOpen(true)
+                }}>
+                  Get Started
+                </Button>
+              </div>
+            </div>
+          </div>
+        </nav>
+
+        {/* Auth Section */}
+        <div className="flex items-center justify-center min-h-[calc(100vh-64px)] px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="max-w-md w-full"
+          >
+            <Card>
+              <CardHeader className="text-center">
+                <CardTitle>Welcome to Anti-Tutorial Hell</CardTitle>
+                <CardDescription>
+                  Sign in to start solving real coding challenges
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <Button 
+                  className="w-full" 
+                  size="lg"
+                  onClick={() => {
+                    setAuthMode('login')
+                    setAuthModalOpen(true)
+                  }}
+                >
+                  Sign In with Email
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="w-full" 
+                  size="lg"
+                  onClick={() => {
+                    setAuthMode('signup')
+                    setAuthModalOpen(true)
+                  }}
+                >
+                  Create Account
+                </Button>
+                <div className="text-center text-sm text-gray-500">
+                  By continuing, you agree to escape tutorial hell
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        </div>
+
+        {/* Auth Modal */}
+        <AuthModal 
+          isOpen={authModalOpen}
+          onClose={() => setAuthModalOpen(false)}
+          mode={authMode}
+          onToggleMode={() => setAuthMode(authMode === 'login' ? 'signup' : 'login')}
+        />
+      </div>
+    )
+  }
+
+  const userProgress = challenges.map(challenge => ({
+    ...challenge,
+    status: Math.random() > 0.7 ? 'completed' : Math.random() > 0.4 ? 'in_progress' : 'not_started'
+  }))
+
+  const completedChallenges = userProgress.filter(c => c.status === 'completed').length
+  const totalChallenges = challenges.length
+  const progressPercentage = (completedChallenges / totalChallenges) * 100
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Navigation */}
+      <nav className="bg-white border-b sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            <div className="flex items-center space-x-3">
+              <div className="p-2 bg-blue-600 rounded-lg">
+                <Code2 className="w-6 h-6 text-white" />
+              </div>
+              <span className="text-xl font-bold text-gray-900">Anti-Tutorial Hell</span>
+            </div>
+            
+            <div className="flex items-center space-x-4">
+              <Link href="/admin" className="p-2 text-gray-500 hover:text-gray-700">
+                <Shield className="w-5 h-5" />
+              </Link>
+              <button className="p-2 text-gray-500 hover:text-gray-700">
+                <Settings className="w-5 h-5" />
+              </button>
+              <button className="p-2 text-gray-500 hover:text-gray-700">
+                <User className="w-5 h-5" />
+              </button>
+              <button 
+                onClick={signOut}
+                className="p-2 text-gray-500 hover:text-gray-700"
+              >
+                <LogOut className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            Your Challenge Dashboard
+          </h1>
+          <p className="text-gray-600">
+            Welcome back, {user.email}! Ready to build some real skills?
+          </p>
+        </div>
+
+        {/* Progress Overview */}
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center">
+                <div className="p-2 bg-blue-100 rounded-lg">
+                  <Target className="w-6 h-6 text-blue-600" />
+                </div>
+                <div className="ml-4">
+                  <div className="text-2xl font-bold text-gray-900">{completedChallenges}/{totalChallenges}</div>
+                  <div className="text-sm text-gray-500">Challenges Completed</div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center">
+                <div className="p-2 bg-green-100 rounded-lg">
+                  <Award className="w-6 h-6 text-green-600" />
+                </div>
+                <div className="ml-4">
+                  <div className="text-2xl font-bold text-gray-900">{Math.floor(progressPercentage)}%</div>
+                  <div className="text-sm text-gray-500">Progress</div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center">
+                <div className="p-2 bg-yellow-100 rounded-lg">
+                  <Clock className="w-6 h-6 text-yellow-600" />
+                </div>
+                <div className="ml-4">
+                  <div className="text-2xl font-bold text-gray-900">12h</div>
+                  <div className="text-sm text-gray-500">Time Invested</div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center">
+                <div className="p-2 bg-purple-100 rounded-lg">
+                  <Play className="w-6 h-6 text-purple-600" />
+                </div>
+                <div className="ml-4">
+                  <div className="text-2xl font-bold text-gray-900">{userProgress.filter(c => c.status === 'in_progress').length}</div>
+                  <div className="text-sm text-gray-500">In Progress</div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Overall Progress */}
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle>Overall Progress</CardTitle>
+            <CardDescription>Your journey through Anti-Tutorial Hell</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium">Challenges Completed</span>
+                <span className="text-sm text-gray-500">{completedChallenges} of {totalChallenges}</span>
+              </div>
+              <Progress value={progressPercentage} />
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Challenge Grid */}
+        <div className="space-y-6">
+          <h2 className="text-2xl font-bold text-gray-900">Available Challenges</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {userProgress.map((challenge, index) => (
+              <motion.div
+                key={challenge.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+              >
+                <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full">
+                  <CardHeader>
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <CardTitle className="text-lg">{challenge.title}</CardTitle>
+                        <CardDescription className="mt-1">
+                          {challenge.description}
+                        </CardDescription>
+                      </div>
+                      <Badge 
+                        variant={
+                          challenge.difficulty === 'beginner' ? 'success' :
+                          challenge.difficulty === 'intermediate' ? 'warning' :
+                          'destructive'
+                        }
+                      >
+                        {challenge.difficulty}
+                      </Badge>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <Badge variant="outline">{challenge.category}</Badge>
+                        <Badge 
+                          variant={
+                            challenge.status === 'completed' ? 'success' :
+                            challenge.status === 'in_progress' ? 'warning' :
+                            'secondary'
+                          }
+                        >
+                          {challenge.status === 'completed' ? 'Completed' :
+                           challenge.status === 'in_progress' ? 'In Progress' :
+                           'Not Started'}
+                        </Badge>
+                      </div>
+                      <Button className="w-full">
+                        {challenge.status === 'completed' ? 'Review' :
+                         challenge.status === 'in_progress' ? 'Continue' :
+                         'Start Challenge'}
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export function MainApp() {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
+  )
+}
