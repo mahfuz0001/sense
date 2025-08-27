@@ -7,10 +7,22 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Dependency directories
 node_modules
+.pnp
+.pnp.js
+
+# Next.js
+.next/
+out/
+
+# Production
+build
 dist
-dist-ssr
-*.local
+
+# Environment variables
+.env*.local
+.env
 
 # Editor directories and files
 .vscode/*
@@ -22,3 +34,18 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Testing
+coverage/
+.nyc_output
+
+# Misc
+*.tsbuildinfo
+next-env.d.ts
+
+# Backup files
+*_backup
+src_backup
+database_backup
+public_backup
+package.json.old
