@@ -2,14 +2,31 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Code2, User, LogOut, Settings, Shield } from 'lucide-react'
+import { Code2, User, LogOut, Settings, Shield, Play, Clock, Target, Award } from 'lucide-react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Progress } from '@/components/ui/progress'
+import { AuthProvider, useAuth } from '@/hooks/useAuth'
+import { AuthModal } from '@/components/auth/AuthModal'
+import { mockChallenges as challenges } from '@/data/mockData'
 
-export function MainApp() {
-  const [user, setUser] = useState<any>(null)
+function AppContent() {
+  const { user, loading, signOut } = useAuth()
   const [authModalOpen, setAuthModalOpen] = useState(false)
+  const [authMode, setAuthMode] = useState<'login' | 'signup'>('login')
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading Anti-Tutorial Hell...</p>
+        </div>
+      </div>
+    )
+  }
 
   if (!user) {
     return (
@@ -28,11 +45,17 @@ export function MainApp() {
               <div className="flex items-center space-x-4">
                 <Button 
                   variant="outline"
-                  onClick={() => setAuthModalOpen(true)}
+                  onClick={() => {
+                    setAuthMode('login')
+                    setAuthModalOpen(true)
+                  }}
                 >
                   Sign In
                 </Button>
-                <Button onClick={() => setAuthModalOpen(true)}>
+                <Button onClick={() => {
+                  setAuthMode('signup')
+                  setAuthModalOpen(true)
+                }}>
                   Get Started
                 </Button>
               </div>
@@ -55,10 +78,25 @@ export function MainApp() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <Button className="w-full" size="lg">
+                <Button 
+                  className="w-full" 
+                  size="lg"
+                  onClick={() => {
+                    setAuthMode('login')
+                    setAuthModalOpen(true)
+                  }}
+                >
                   Sign In with Email
                 </Button>
-                <Button variant="outline" className="w-full" size="lg">
+                <Button 
+                  variant="outline" 
+                  className="w-full" 
+                  size="lg"
+                  onClick={() => {
+                    setAuthMode('signup')
+                    setAuthModalOpen(true)
+                  }}
+                >
                   Create Account
                 </Button>
                 <div className="text-center text-sm text-gray-500">
@@ -68,9 +106,26 @@ export function MainApp() {
             </Card>
           </motion.div>
         </div>
+
+        {/* Auth Modal */}
+        <AuthModal 
+          isOpen={authModalOpen}
+          onClose={() => setAuthModalOpen(false)}
+          mode={authMode}
+          onToggleMode={() => setAuthMode(authMode === 'login' ? 'signup' : 'login')}
+        />
       </div>
     )
   }
+
+  const userProgress = challenges.map(challenge => ({
+    ...challenge,
+    status: Math.random() > 0.7 ? 'completed' : Math.random() > 0.4 ? 'in_progress' : 'not_started'
+  }))
+
+  const completedChallenges = userProgress.filter(c => c.status === 'completed').length
+  const totalChallenges = challenges.length
+  const progressPercentage = (completedChallenges / totalChallenges) * 100
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -95,7 +150,10 @@ export function MainApp() {
               <button className="p-2 text-gray-500 hover:text-gray-700">
                 <User className="w-5 h-5" />
               </button>
-              <button className="p-2 text-gray-500 hover:text-gray-700">
+              <button 
+                onClick={signOut}
+                className="p-2 text-gray-500 hover:text-gray-700"
+              >
                 <LogOut className="w-5 h-5" />
               </button>
             </div>
@@ -105,49 +163,160 @@ export function MainApp() {
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
             Your Challenge Dashboard
           </h1>
-          <p className="text-lg text-gray-600">
-            Choose a challenge and start building real skills
+          <p className="text-gray-600">
+            Welcome back, {user.email}! Ready to build some real skills?
           </p>
         </div>
 
+        {/* Progress Overview */}
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center">
+                <div className="p-2 bg-blue-100 rounded-lg">
+                  <Target className="w-6 h-6 text-blue-600" />
+                </div>
+                <div className="ml-4">
+                  <div className="text-2xl font-bold text-gray-900">{completedChallenges}/{totalChallenges}</div>
+                  <div className="text-sm text-gray-500">Challenges Completed</div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center">
+                <div className="p-2 bg-green-100 rounded-lg">
+                  <Award className="w-6 h-6 text-green-600" />
+                </div>
+                <div className="ml-4">
+                  <div className="text-2xl font-bold text-gray-900">{Math.floor(progressPercentage)}%</div>
+                  <div className="text-sm text-gray-500">Progress</div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center">
+                <div className="p-2 bg-yellow-100 rounded-lg">
+                  <Clock className="w-6 h-6 text-yellow-600" />
+                </div>
+                <div className="ml-4">
+                  <div className="text-2xl font-bold text-gray-900">12h</div>
+                  <div className="text-sm text-gray-500">Time Invested</div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center">
+                <div className="p-2 bg-purple-100 rounded-lg">
+                  <Play className="w-6 h-6 text-purple-600" />
+                </div>
+                <div className="ml-4">
+                  <div className="text-2xl font-bold text-gray-900">{userProgress.filter(c => c.status === 'in_progress').length}</div>
+                  <div className="text-sm text-gray-500">In Progress</div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Overall Progress */}
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle>Overall Progress</CardTitle>
+            <CardDescription>Your journey through Anti-Tutorial Hell</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium">Challenges Completed</span>
+                <span className="text-sm text-gray-500">{completedChallenges} of {totalChallenges}</span>
+              </div>
+              <Progress value={progressPercentage} />
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Challenge Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[1, 2, 3, 4, 5, 6].map((i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.1 }}
-            >
-              <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-                <CardHeader>
-                  <CardTitle>Challenge {i}</CardTitle>
-                  <CardDescription>
-                    Build a responsive component without tutorials
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center justify-between">
-                    <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">
-                      Intermediate
-                    </span>
-                    <span className="text-sm text-gray-500">
-                      Not Started
-                    </span>
-                  </div>
-                  <Button className="w-full mt-4">
-                    Start Challenge
-                  </Button>
-                </CardContent>
-              </Card>
-            </motion.div>
-          ))}
+        <div className="space-y-6">
+          <h2 className="text-2xl font-bold text-gray-900">Available Challenges</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {userProgress.map((challenge, index) => (
+              <motion.div
+                key={challenge.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+              >
+                <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full">
+                  <CardHeader>
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <CardTitle className="text-lg">{challenge.title}</CardTitle>
+                        <CardDescription className="mt-1">
+                          {challenge.description}
+                        </CardDescription>
+                      </div>
+                      <Badge 
+                        variant={
+                          challenge.difficulty === 'beginner' ? 'success' :
+                          challenge.difficulty === 'intermediate' ? 'warning' :
+                          'destructive'
+                        }
+                      >
+                        {challenge.difficulty}
+                      </Badge>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <Badge variant="outline">{challenge.category}</Badge>
+                        <Badge 
+                          variant={
+                            challenge.status === 'completed' ? 'success' :
+                            challenge.status === 'in_progress' ? 'warning' :
+                            'secondary'
+                          }
+                        >
+                          {challenge.status === 'completed' ? 'Completed' :
+                           challenge.status === 'in_progress' ? 'In Progress' :
+                           'Not Started'}
+                        </Badge>
+                      </div>
+                      <Button className="w-full">
+                        {challenge.status === 'completed' ? 'Review' :
+                         challenge.status === 'in_progress' ? 'Continue' :
+                         'Start Challenge'}
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </div>
     </div>
+  )
+}
+
+export function MainApp() {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
   )
 }
