@@ -61,8 +61,9 @@ export async function middleware(request: NextRequest) {
   
   try {
     await rateLimiter.consume(clientIP)
-  } catch (rejRes: any) {
-    const secs = Math.round(rejRes.msBeforeNext / 1000) || 1
+  } catch (rejRes: unknown) {
+    const rejection = rejRes as { msBeforeNext: number };
+    const secs = Math.round(rejection.msBeforeNext / 1000) || 1;
     
     // Return rate limit exceeded response
     return new NextResponse(
@@ -78,7 +79,7 @@ export async function middleware(request: NextRequest) {
           'Retry-After': String(secs),
           'X-RateLimit-Limit': String(rateLimiter.points),
           'X-RateLimit-Remaining': '0',
-          'X-RateLimit-Reset': String(Date.now() + rejRes.msBeforeNext),
+          'X-RateLimit-Reset': String(Date.now() + rejection.msBeforeNext),
         },
       }
     )

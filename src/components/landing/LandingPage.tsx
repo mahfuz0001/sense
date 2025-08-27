@@ -2,11 +2,11 @@
 
 import { useState, useEffect } from 'react'
 import { motion, useAnimation } from 'framer-motion'
-import { Code2, Zap, Target, Users, ArrowRight, CheckCircle, XCircle, Play, Star, Trophy, BookOpen, Lightbulb, Rocket } from 'lucide-react'
+import { Code2, Zap, Target, Users, ArrowRight, CheckCircle, XCircle, Play, Star, Rocket } from 'lucide-react'
 import Link from 'next/link'
+import Image from 'next/image'
 
 export function LandingPage() {
-  const [email, setEmail] = useState('')
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false)
   const controls = useAnimation()
 
@@ -193,12 +193,12 @@ export function LandingPage() {
                   <CheckCircle className="w-6 h-6 text-green-500 flex-shrink-0 mt-1" />
                   <div>
                     <h3 className="font-semibold text-gray-900 mb-2">Our challenges force active learning</h3>
-                    <p className="text-gray-600">You'll struggle, research, experiment, and eventually solve problems independently.</p>
+                    <p className="text-gray-600">                    You&apos;ll struggle, research, experiment, and eventually solve problems independently.</p>
                   </div>
                 </div>
                 <div className="p-6 bg-blue-50 rounded-lg">
                   <p className="text-blue-900 font-medium">
-                    This struggle is not a bug—it's the feature that builds genuine developer confidence.
+                    This struggle is not a bug—it&apos;s the feature that builds genuine developer confidence.
                   </p>
                 </div>
               </div>
@@ -323,11 +323,13 @@ export function LandingPage() {
                     <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
                   ))}
                 </div>
-                <p className="text-gray-700 mb-6 italic">"{testimonial.content}"</p>
+                <p className="text-gray-700 mb-6 italic">&ldquo;{testimonial.content}&rdquo;</p>
                 <div className="flex items-center">
-                  <img 
+                  <Image 
                     src={testimonial.avatar} 
                     alt={testimonial.name}
+                    width={48}
+                    height={48}
                     className="w-12 h-12 rounded-full mr-4"
                   />
                   <div>

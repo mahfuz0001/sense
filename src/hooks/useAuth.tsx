@@ -25,7 +25,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     // For demo purposes, create a mock user after a short delay
     const timer = setTimeout(() => {
-      const mockUser = {
+      const mockUser: User = {
         id: 'demo-user',
         email: 'demo@antitutorialhell.com',
         user_metadata: {},
@@ -33,7 +33,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         aud: 'authenticated',
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
-      } as any;
+      };
       
       setUser(mockUser);
       setLoading(false);
@@ -85,7 +85,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       
       // Demo mode - accept any email/password for demonstration
       if (email.includes('demo') || email === 'test@example.com') {
-        const mockUser = {
+        const mockUser: User = {
           id: 'demo-user',
           email: email,
           user_metadata: {},
@@ -93,7 +93,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           aud: 'authenticated',
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString()
-        } as any;
+        };
         
         setUser(mockUser);
         toast.success('Welcome to the demo!');
@@ -113,7 +113,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
 
       return false;
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast.error('An unexpected error occurred');
       console.error('Sign in error:', error);
       return false;
@@ -122,12 +122,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const signUp = async (email: string, password: string): Promise<boolean> => {
+  const signUp = async (email: string, _password: string): Promise<boolean> => {
     try {
       setLoading(true);
       
       // Demo mode - accept any email/password for demonstration
-      const mockUser = {
+      const mockUser: User = {
         id: 'demo-user-' + Date.now(),
         email: email,
         user_metadata: {},
@@ -135,13 +135,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         aud: 'authenticated',
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
-      } as any;
+      };
       
       setUser(mockUser);
       toast.success('Welcome to Anti-Tutorial Hell! Demo account created.');
       return true;
       
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast.error('An unexpected error occurred');
       console.error('Sign up error:', error);
       return false;
@@ -160,7 +160,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       } else {
         toast.success('Signed out successfully');
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast.error('An unexpected error occurred');
       console.error('Sign out error:', error);
     } finally {
