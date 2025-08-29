@@ -17,7 +17,7 @@ const authSchema = z.object({
 
 const signUpSchema = authSchema.extend({
   confirmPassword: z.string().optional(),
-  metadata: z.record(z.any()).optional(),
+  metadata: z.record(z.string(), z.any()).optional(),
 }).refine((data) => {
   if (data.confirmPassword && data.password !== data.confirmPassword) {
     return false;
@@ -86,7 +86,7 @@ async function handleSignIn(body: any, clientIP: string, start: number) {
   
   const { data, error } = await auth.signIn(email, password);
   
-  if (error) {
+  if (error || !data) {
     securityLogger.authAttempt(clientIP, false, { 
       email,
       reason: 'invalid_credentials',
@@ -131,20 +131,20 @@ async function handleSignUp(body: any, clientIP: string, start: number) {
   
   const { data, error } = await auth.signUp(email, password, metadata);
   
-  if (error) {
+  if (error || !data) {
     securityLogger.authAttempt(clientIP, false, { 
       email,
       reason: 'signup_failed',
-      error: error.message,
+      error: error?.message || 'No data returned',
       duration: Date.now() - start,
     });
     
     // Handle specific signup errors
-    if (error.message.includes('already registered')) {
+    if (error?.message.includes('already registered')) {
       throw new ValidationError('Email already registered');
     }
     
-    throw new ValidationError(error.message || 'Signup failed');
+    throw new ValidationError(error?.message || 'Signup failed');
   }
   
   securityLogger.authAttempt(clientIP, true, { 
@@ -192,10 +192,10 @@ async function handleSignOut(clientIP: string, start: number) {
 async function handleRefreshSession(clientIP: string, start: number) {
   const { data, error } = await auth.refreshSession();
   
-  if (error) {
+  if (error || !data) {
     securityLogger.authAttempt(clientIP, false, { 
       action: 'refresh',
-      error: error.message,
+      error: error?.message || 'No data returned',
       duration: Date.now() - start,
     });
     
@@ -275,10 +275,10 @@ async function handleUpdatePassword(body: any, clientIP: string, start: number) 
   
   const { data, error } = await auth.updatePassword(password);
   
-  if (error) {
+  if (error || !data) {
     securityLogger.authAttempt(clientIP, false, { 
       action: 'update_password',
-      error: error.message,
+      error: error?.message || 'No data returned',
       duration: Date.now() - start,
     });
     
