@@ -8,6 +8,18 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Skeleton } from '@/components/ui/skeleton'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { ThemeToggle } from '@/components/theme-toggle'
+import { 
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import { AuthProvider, useAuth } from '@/hooks/useAuth'
 import { AuthModal } from '@/components/auth/AuthModal'
 import { ChallengeInterface } from '@/components/challenge/ChallengeInterface'
@@ -39,14 +51,42 @@ function AppContent() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center">
-          <motion.div 
-            animate={{ rotate: 360 }} 
-            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-            className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"
-          ></motion.div>
-          <p className="text-gray-600">Loading Anti-Tutorial Hell...</p>
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+        {/* Navigation Skeleton */}
+        <nav className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center justify-between h-16">
+              <div className="flex items-center space-x-3">
+                <Skeleton className="h-10 w-10 rounded-lg" />
+                <Skeleton className="h-6 w-48" />
+              </div>
+              <div className="flex items-center space-x-4">
+                <Skeleton className="h-8 w-8 rounded-full" />
+                <Skeleton className="h-8 w-8 rounded-full" />
+                <Skeleton className="h-8 w-8 rounded-full" />
+              </div>
+            </div>
+          </div>
+        </nav>
+
+        {/* Content Skeleton */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="space-y-6">
+            <Skeleton className="h-8 w-64" />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {[...Array(6)].map((_, i) => (
+                <Card key={i}>
+                  <CardHeader>
+                    <Skeleton className="h-4 w-3/4" />
+                    <Skeleton className="h-3 w-1/2" />
+                  </CardHeader>
+                  <CardContent>
+                    <Skeleton className="h-16 w-full" />
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     )
@@ -54,19 +94,22 @@ function AppContent() {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
         {/* Navigation */}
-        <nav className="bg-white border-b sticky top-0 z-50">
+        <nav className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between h-16">
               <div className="flex items-center space-x-3">
-                <div className="p-2 bg-blue-600 rounded-lg">
+                <div className="p-2 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg shadow-lg">
                   <Code2 className="w-6 h-6 text-white" />
                 </div>
-                <span className="text-xl font-bold text-gray-900">Anti-Tutorial Hell</span>
+                <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                  Anti-Tutorial Hell
+                </span>
               </div>
               
               <div className="flex items-center space-x-4">
+                <ThemeToggle />
                 <Button 
                   variant="ghost" 
                   onClick={() => {
@@ -76,10 +119,13 @@ function AppContent() {
                 >
                   Sign In
                 </Button>
-                <Button onClick={() => {
-                  setAuthMode('signup')
-                  setAuthModalOpen(true)
-                }}>
+                <Button 
+                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                  onClick={() => {
+                    setAuthMode('signup')
+                    setAuthModalOpen(true)
+                  }}
+                >
                   Get Started
                 </Button>
               </div>
@@ -180,7 +226,7 @@ function AppContent() {
       ) : (
         <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
       {/* Navigation */}
-      <nav className="bg-white/80 backdrop-blur-md border-b sticky top-0 z-50 shadow-sm">
+      <nav className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <motion.div 
@@ -188,32 +234,66 @@ function AppContent() {
               animate={{ opacity: 1, x: 0 }}
               className="flex items-center space-x-3"
             >
-              <div className="p-2 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg">
+              <div className="p-2 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg shadow-lg">
                 <Code2 className="w-6 h-6 text-white" />
               </div>
-              <span className="text-xl font-bold text-gray-900">Anti-Tutorial Hell</span>
+              <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                Anti-Tutorial Hell
+              </span>
             </motion.div>
             
             <div className="flex items-center space-x-4">
-              <div className="hidden md:flex items-center space-x-2 bg-yellow-100 px-3 py-1 rounded-full">
-                <Trophy className="w-4 h-4 text-yellow-600" />
-                <span className="text-sm font-medium text-yellow-800">{totalPoints} points</span>
-              </div>
-              <Link href="/admin" className="p-2 text-gray-500 hover:text-gray-700 transition-colors">
-                <Shield className="w-5 h-5" />
+              <Badge variant="secondary" className="hidden md:flex items-center space-x-2 bg-gradient-to-r from-yellow-100 to-orange-100 dark:from-yellow-900/30 dark:to-orange-900/30 px-3 py-1">
+                <Trophy className="w-4 h-4 text-yellow-600 dark:text-yellow-400" />
+                <span className="text-sm font-medium text-yellow-800 dark:text-yellow-200">{totalPoints} points</span>
+              </Badge>
+              
+              <Link href="/admin">
+                <Button variant="ghost" size="icon">
+                  <Shield className="w-5 h-5" />
+                </Button>
               </Link>
-              <button className="p-2 text-gray-500 hover:text-gray-700 transition-colors">
-                <Settings className="w-5 h-5" />
-              </button>
-              <button className="p-2 text-gray-500 hover:text-gray-700 transition-colors">
-                <User className="w-5 h-5" />
-              </button>
-              <button 
-                onClick={signOut}
-                className="p-2 text-gray-500 hover:text-gray-700 transition-colors"
-              >
-                <LogOut className="w-5 h-5" />
-              </button>
+              
+              <ThemeToggle />
+              
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon">
+                    <Avatar className="w-8 h-8">
+                      <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.email}`} />
+                      <AvatarFallback>
+                        {user?.email?.substring(0, 2).toUpperCase() || 'U'}
+                      </AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuLabel>
+                    <div className="flex flex-col space-y-1">
+                      <p className="text-sm font-medium">Welcome back!</p>
+                      <p className="text-xs text-muted-foreground">{user?.email}</p>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem>
+                    <User className="mr-2 h-4 w-4" />
+                    <span>Profile</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Settings className="mr-2 h-4 w-4" />
+                    <span>Settings</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Trophy className="mr-2 h-4 w-4" />
+                    <span>Achievements</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={signOut} className="text-red-600 dark:text-red-400">
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Sign out</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         </div>
