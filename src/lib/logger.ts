@@ -28,7 +28,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 // Security event logger
 export const securityLogger = {
-  authAttempt: (ip: string, success: boolean, details?: any) => {
+  authAttempt: (ip: string, success: boolean, details?: Record<string, unknown>) => {
     logger.info('Authentication attempt', {
       type: 'auth_attempt',
       ip,
@@ -48,7 +48,7 @@ export const securityLogger = {
     })
   },
   
-  suspiciousActivity: (ip: string, activity: string, details?: any) => {
+  suspiciousActivity: (ip: string, activity: string, details?: Record<string, unknown>) => {
     logger.warn('Suspicious activity detected', {
       type: 'suspicious_activity',
       ip,
@@ -68,7 +68,7 @@ export const securityLogger = {
     })
   },
   
-  systemError: (error: Error, context?: any) => {
+  systemError: (error: Error, context?: Record<string, unknown>) => {
     logger.error('System error', {
       type: 'system_error',
       message: error.message,

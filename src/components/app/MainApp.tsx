@@ -1,8 +1,8 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Code2, User, LogOut, Settings, Shield, Play, Clock, Target, Award, BookOpen, Lightbulb, Zap, TrendingUp, Calendar, Users, Star, Trophy, CheckCircle, XCircle, ArrowRight } from 'lucide-react'
+import { Code2, User, LogOut, Settings, Shield, Play, Clock, Target, Award, BookOpen, TrendingUp, Calendar, Star, Trophy, CheckCircle, ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -10,6 +10,8 @@ import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import { AuthProvider, useAuth } from '@/hooks/useAuth'
 import { AuthModal } from '@/components/auth/AuthModal'
+import { ChallengeInterface } from '@/components/challenge/ChallengeInterface'
+import type { Challenge } from '@/types'
 import { mockChallenges as challenges } from '@/data/mockData'
 
 function AppContent() {
@@ -18,6 +20,22 @@ function AppContent() {
   const [authMode, setAuthMode] = useState<'login' | 'signup'>('login')
   const [selectedCategory, setSelectedCategory] = useState<string>('all')
   const [searchQuery, setSearchQuery] = useState('')
+  const [currentChallenge, setCurrentChallenge] = useState<Challenge | null>(null)
+
+  const handleStartChallenge = (challenge: Challenge) => {
+    setCurrentChallenge(challenge)
+  }
+
+  const handleChallengeComplete = (solution: string) => {
+    // In a real app, this would save to the database
+    console.log('Challenge completed with solution:', solution)
+    setCurrentChallenge(null)
+    // Could show a completion modal, update user stats, etc.
+  }
+
+  const handleBackToDashboard = () => {
+    setCurrentChallenge(null)
+  }
 
   if (loading) {
     return (
@@ -152,7 +170,15 @@ function AppContent() {
   ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
+    <>
+      {currentChallenge ? (
+        <ChallengeInterface
+          challenge={currentChallenge}
+          onBack={handleBackToDashboard}
+          onComplete={handleChallengeComplete}
+        />
+      ) : (
+        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
       {/* Navigation */}
       <nav className="bg-white/80 backdrop-blur-md border-b sticky top-0 z-50 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -453,7 +479,10 @@ function AppContent() {
                             </Badge>
                           </div>
                         </div>
-                        <Button className="w-full group-hover:bg-blue-600 transition-colors">
+                        <Button 
+                          className="w-full group-hover:bg-blue-600 transition-colors"
+                          onClick={() => handleStartChallenge(challenge)}
+                        >
                           {challenge.status === 'completed' ? (
                             <>
                               <Trophy className="w-4 h-4 mr-2" />
@@ -489,6 +518,8 @@ function AppContent() {
         </motion.div>
       </div>
     </div>
+      )}
+    </>
   )
 }
 

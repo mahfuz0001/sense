@@ -1,12 +1,11 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Shield, Users, BarChart3, Settings, Key, LogOut, AlertTriangle, CheckCircle } from 'lucide-react'
+import { Shield, Users, BarChart3, Key, LogOut, AlertTriangle, CheckCircle } from 'lucide-react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
 
 export function AdminDashboard() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
@@ -24,7 +23,8 @@ export function AdminDashboard() {
       
       // For demo purposes, we'll authenticate successfully
       setIsAuthenticated(true)
-    } catch (error) {
+    } catch (error: unknown) {
+      console.error('Authentication error:', error);
       setAuthError('Authentication failed. Please try again.')
     } finally {
       setIsAuthenticating(false)
