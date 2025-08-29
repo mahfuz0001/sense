@@ -1,30 +1,39 @@
-import winston from 'winston'
+// Universal logger that works in both client and server environments
+let logger: any;
 
-// Create logger instance
-const logger = winston.createLogger({
-  level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
-  format: winston.format.combine(
-    winston.format.timestamp(),
-    winston.format.errors({ stack: true }),
-    winston.format.json()
-  ),
-  defaultMeta: { service: 'anti-tutorial-hell' },
-  transports: [
-    // Write to all logs with level `info` and below to `combined.log`
-    new winston.transports.File({ filename: 'logs/error.log', level: 'error' }),
-    new winston.transports.File({ filename: 'logs/combined.log' }),
-  ],
-})
+// Check if we're in a server environment
+const isServer = typeof window === 'undefined';
 
-// If we're not in production, log to the console as well
-if (process.env.NODE_ENV !== 'production') {
-  logger.add(new winston.transports.Console({
-    format: winston.format.combine(
-      winston.format.colorize(),
-      winston.format.simple()
-    )
-  }))
+if (isServer) {
+  // Server-side winston logger - only import on server
+  logger = {
+    error: (message: string, meta?: any) => {
+      console.error(`[ERROR] ${message}`, meta);
+      // TODO: Add winston logging for production
+    },
+    warn: (message: string, meta?: any) => {
+      console.warn(`[WARN] ${message}`, meta);
+    },
+    info: (message: string, meta?: any) => {
+      console.info(`[INFO] ${message}`, meta);
+    },
+    debug: (message: string, meta?: any) => {
+      if (process.env.NODE_ENV !== 'production') {
+        console.debug(`[DEBUG] ${message}`, meta);
+      }
+    },
+  };
+} else {
+  // Client-side logger (use console)
+  logger = {
+    error: (message: string, meta?: any) => console.error(`[ERROR] ${message}`, meta),
+    warn: (message: string, meta?: any) => console.warn(`[WARN] ${message}`, meta),
+    info: (message: string, meta?: any) => console.info(`[INFO] ${message}`, meta),
+    debug: (message: string, meta?: any) => console.debug(`[DEBUG] ${message}`, meta),
+  };
 }
+
+export { logger };
 
 // Security event logger
 export const securityLogger = {
