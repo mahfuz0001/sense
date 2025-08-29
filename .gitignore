@@ -49,3 +49,4 @@ src_backup
 database_backup
 public_backup
 package.json.old
+.vercel
