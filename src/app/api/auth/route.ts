@@ -230,7 +230,7 @@ async function handleRefreshSession(clientIP: string, start: number) {
   });
 }
 
-interface ResetPasswordBody {
+interface ResetPasswordBody extends Record<string, unknown> {
   email: string;
 }
 
@@ -274,7 +274,7 @@ async function handleResetPassword(body: ResetPasswordBody, clientIP: string, st
   });
 }
 
-interface UpdatePasswordBody {
+interface UpdatePasswordBody extends Record<string, unknown> {
   password: string;
 }
 

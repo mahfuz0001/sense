@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useEffect } from 'react'
+import { useRef } from 'react'
 import * as Monaco from '@monaco-editor/react'
 
 interface CodeEditorProps {
@@ -11,23 +11,26 @@ interface CodeEditorProps {
 }
 
 export function CodeEditor({ value, onChange, language, height = "400px" }: CodeEditorProps) {
-  const editorRef = useRef<any>(null)
+  const editorRef = useRef<unknown>(null)
 
-  const handleEditorDidMount = (editor: any) => {
+  const handleEditorDidMount = (editor: unknown) => {
     editorRef.current = editor
     
-    // Configure editor settings
-    editor.updateOptions({
-      fontSize: 14,
-      lineNumbers: 'on',
-      roundedSelection: false,
-      scrollBeyondLastLine: false,
-      automaticLayout: true,
-      minimap: { enabled: false },
-      wordWrap: 'on',
-      lineHeight: 24,
-      fontFamily: '"JetBrains Mono", "SF Mono", "Monaco", "Inconsolata", "Fira Code", "Fira Mono", "Droid Sans Mono", "Consolas", monospace',
-    })
+    // Configure editor settings - removed specific typing due to complexity
+    if (editor && typeof editor === 'object' && 'updateOptions' in editor) {
+      const typedEditor = editor as { updateOptions: (options: unknown) => void }
+      typedEditor.updateOptions({
+        fontSize: 14,
+        lineNumbers: 'on',
+        roundedSelection: false,
+        scrollBeyondLastLine: false,
+        automaticLayout: true,
+        minimap: { enabled: false },
+        wordWrap: 'on',
+        lineHeight: 24,
+        fontFamily: '"JetBrains Mono", "SF Mono", "Monaco", "Inconsolata", "Fira Code", "Fira Mono", "Droid Sans Mono", "Consolas", monospace',
+      })
+    }
   }
 
   const handleEditorChange = (newValue: string | undefined) => {
