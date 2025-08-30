@@ -73,7 +73,12 @@ export async function POST(request: NextRequest) {
   }
 }
 
-async function handleSignIn(body: any, clientIP: string, start: number) {
+interface SignInBody {
+  email: string;
+  password: string;
+}
+
+async function handleSignIn(body: SignInBody, clientIP: string, start: number) {
   const result = authSchema.safeParse(body);
   
   if (!result.success) {
@@ -118,7 +123,14 @@ async function handleSignIn(body: any, clientIP: string, start: number) {
   });
 }
 
-async function handleSignUp(body: any, clientIP: string, start: number) {
+interface SignUpBody {
+  email: string;
+  password: string;
+  confirmPassword?: string;
+  metadata?: Record<string, string>;
+}
+
+async function handleSignUp(body: SignUpBody, clientIP: string, start: number) {
   const result = signUpSchema.safeParse(body);
   
   if (!result.success) {
@@ -218,7 +230,11 @@ async function handleRefreshSession(clientIP: string, start: number) {
   });
 }
 
-async function handleResetPassword(body: any, clientIP: string, start: number) {
+interface ResetPasswordBody {
+  email: string;
+}
+
+async function handleResetPassword(body: ResetPasswordBody, clientIP: string, start: number) {
   validateRequired(body, ['email']);
   
   const emailSchema = z.object({
@@ -233,7 +249,7 @@ async function handleResetPassword(body: any, clientIP: string, start: number) {
   
   const { email } = result.data;
   
-  const { data, error } = await auth.resetPassword(email);
+  const { error } = await auth.resetPassword(email);
   
   if (error) {
     securityLogger.authAttempt(clientIP, false, { 
@@ -258,7 +274,11 @@ async function handleResetPassword(body: any, clientIP: string, start: number) {
   });
 }
 
-async function handleUpdatePassword(body: any, clientIP: string, start: number) {
+interface UpdatePasswordBody {
+  password: string;
+}
+
+async function handleUpdatePassword(body: UpdatePasswordBody, clientIP: string, start: number) {
   validateRequired(body, ['password']);
   
   const passwordSchema = z.object({

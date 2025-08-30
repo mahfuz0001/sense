@@ -1,14 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/supabase';
-import { config, isProduction } from '@/lib/config';
-import { logger, securityLogger } from '@/lib/logger';
+import { config } from '@/lib/config';
+import { securityLogger } from '@/lib/logger';
 
 interface HealthCheckResult {
   service: string;
   status: 'healthy' | 'unhealthy' | 'degraded';
   responseTime?: number;
   error?: string;
-  details?: Record<string, any>;
+  details?: Record<string, unknown>;
 }
 
 interface SystemHealth {
@@ -240,7 +240,7 @@ export async function GET(request: NextRequest) {
 }
 
 // Simple readiness check
-export async function HEAD(request: NextRequest) {
+export async function HEAD(_request: NextRequest) {
   try {
     const dbHealth = await db.healthCheck();
     return new NextResponse(null, { 
