@@ -19,7 +19,7 @@ interface ChallengeInterfaceProps {
 
 export function ChallengeInterface({ challenge, onBack, onComplete }: ChallengeInterfaceProps) {
   const [code, setCode] = useState(challenge.starting_code)
-  const [testResults, setTestResults] = useState<any[]>([])
+  const [testResults, setTestResults] = useState<Array<{ id: string; description: string; expected_output: string; passed?: boolean; output?: string }>>([])
   const [isRunning, setIsRunning] = useState(false)
   const [hintsUsed, setHintsUsed] = useState(0)
   const [startTime] = useState(Date.now())
@@ -57,7 +57,9 @@ export function ChallengeInterface({ challenge, onBack, onComplete }: ChallengeI
       }
       
       return {
-        ...testCase,
+        id: testCase.id,
+        description: testCase.description,
+        expected_output: testCase.expected_output,
         passed,
         output: passed ? testCase.expected_output : 'Test failed - check your implementation'
       }

@@ -6,14 +6,14 @@ export class AppError extends Error {
   public readonly statusCode: number;
   public readonly isOperational: boolean;
   public readonly code?: string;
-  public readonly context?: Record<string, any>;
+  public readonly context?: Record<string, unknown>;
 
   constructor(
     message: string,
     statusCode: number = 500,
     isOperational: boolean = true,
     code?: string,
-    context?: Record<string, any>
+    context?: Record<string, unknown>
   ) {
     super(message);
     this.statusCode = statusCode;
@@ -26,31 +26,31 @@ export class AppError extends Error {
 }
 
 export class ValidationError extends AppError {
-  constructor(message: string, context?: Record<string, any>) {
+  constructor(message: string, context?: Record<string, unknown>) {
     super(message, 400, true, 'VALIDATION_ERROR', context);
   }
 }
 
 export class AuthenticationError extends AppError {
-  constructor(message: string = 'Authentication required', context?: Record<string, any>) {
+  constructor(message: string = 'Authentication required', context?: Record<string, unknown>) {
     super(message, 401, true, 'AUTHENTICATION_ERROR', context);
   }
 }
 
 export class AuthorizationError extends AppError {
-  constructor(message: string = 'Insufficient permissions', context?: Record<string, any>) {
+  constructor(message: string = 'Insufficient permissions', context?: Record<string, unknown>) {
     super(message, 403, true, 'AUTHORIZATION_ERROR', context);
   }
 }
 
 export class NotFoundError extends AppError {
-  constructor(resource: string = 'Resource', context?: Record<string, any>) {
+  constructor(resource: string = 'Resource', context?: Record<string, unknown>) {
     super(`${resource} not found`, 404, true, 'NOT_FOUND_ERROR', context);
   }
 }
 
 export class ConflictError extends AppError {
-  constructor(message: string, context?: Record<string, any>) {
+  constructor(message: string, context?: Record<string, unknown>) {
     super(message, 409, true, 'CONFLICT_ERROR', context);
   }
 }
@@ -62,19 +62,19 @@ export class RateLimitError extends AppError {
 }
 
 export class DatabaseError extends AppError {
-  constructor(message: string, context?: Record<string, any>) {
+  constructor(message: string, context?: Record<string, unknown>) {
     super(message, 500, true, 'DATABASE_ERROR', context);
   }
 }
 
 export class ExternalServiceError extends AppError {
-  constructor(service: string, message: string, context?: Record<string, any>) {
+  constructor(service: string, message: string, context?: Record<string, unknown>) {
     super(`${service}: ${message}`, 502, true, 'EXTERNAL_SERVICE_ERROR', { service, ...context });
   }
 }
 
 // Error handler for API routes
-export const handleApiError = (error: unknown, context?: Record<string, any>) => {
+export const handleApiError = (error: unknown, context?: Record<string, unknown>) => {
   if (error instanceof AppError) {
     logger.warn('Application error', {
       message: error.message,
@@ -132,9 +132,9 @@ export const handleApiError = (error: unknown, context?: Record<string, any>) =>
 
 // Async error wrapper for API routes
 export const asyncHandler = (
-  fn: (req: any, context?: any) => Promise<any>
+  fn: (req: Request, context?: Record<string, unknown>) => Promise<Response>
 ) => {
-  return async (req: any, context?: any) => {
+  return async (req: Request, context?: Record<string, unknown>) => {
     try {
       return await fn(req, context);
     } catch (error) {
@@ -145,7 +145,7 @@ export const asyncHandler = (
 
 // Database operation wrapper with proper error handling
 export const dbOperation = async <T>(
-  operation: () => Promise<{ data: T | null; error: any }>,
+  operation: () => Promise<{ data: T | null; error: unknown }>,
   errorMessage: string = 'Database operation failed'
 ): Promise<{ data: T | null; error: AppError | null }> => {
   try {
@@ -187,7 +187,7 @@ export const dbOperation = async <T>(
 };
 
 // Validation helper
-export const validateRequired = (data: Record<string, any>, fields: string[]) => {
+export const validateRequired = (data: Record<string, unknown>, fields: string[]) => {
   const missing = fields.filter(field => !data[field]);
   
   if (missing.length > 0) {

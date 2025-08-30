@@ -1,13 +1,20 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Send, Paperclip, Mic, X, Sparkles, Plus } from 'lucide-react';
 
+interface UploadedFile {
+  id: string | number;
+  name: string;
+  type: string;
+  size: number;
+}
+
 const AIInputField = () => {
   const [message, setMessage] = useState('');
   const [isRecording, setIsRecording] = useState(false);
-  const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
   const [isFocused, setIsFocused] = useState(false);
-  const textareaRef = useRef(null);
-  const fileInputRef = useRef(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -16,8 +23,8 @@ const AIInputField = () => {
     }
   }, [message]);
 
-  const handleFileUpload = (event) => {
-    const files = Array.from(event.target.files);
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(event.target.files || []);
     const newFiles = files.map(file => ({
       id: Date.now() + Math.random(),
       name: file.name,
@@ -27,11 +34,11 @@ const AIInputField = () => {
     setUploadedFiles(prev => [...prev, ...newFiles]);
   };
 
-  const removeFile = (id) => {
+  const removeFile = (id: string | number) => {
     setUploadedFiles(prev => prev.filter(file => file.id !== id));
   };
 
-  const formatFileSize = (bytes) => {
+  const formatFileSize = (bytes: number) => {
     if (bytes === 0) return '0 B';
     const k = 1024;
     const sizes = ['B', 'KB', 'MB'];
@@ -47,7 +54,7 @@ const AIInputField = () => {
     }
   };
 
-  const handleKeyDown = (e) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSubmit();

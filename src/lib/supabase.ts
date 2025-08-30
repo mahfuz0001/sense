@@ -37,14 +37,14 @@ const createSupabaseClient = (): SupabaseClient => {
       const table = originalFrom(relation);
       
       // Wrap query methods with error logging
-      const wrapMethod = (method: string, fn: Function) => {
-        return (...args: any[]) => {
+      const wrapMethod = (method: string, fn: (...args: unknown[]) => unknown) => {
+        return (...args: unknown[]) => {
           const start = Date.now();
           const result = fn.apply(table, args);
           
           if (result?.then) {
             return result
-              .then((data: any) => {
+              .then((data: unknown) => {
                 const duration = Date.now() - start;
                 logger.debug('Database query completed', {
                   table: relation,
@@ -54,7 +54,7 @@ const createSupabaseClient = (): SupabaseClient => {
                 });
                 return data;
               })
-              .catch((error: any) => {
+              .catch((error: Error) => {
                 const duration = Date.now() - start;
                 logger.error('Database query failed', {
                   table: relation,
@@ -87,7 +87,7 @@ export const supabase = createSupabaseClient();
 
 // Enhanced Auth helpers with better error handling and logging
 export const auth = {
-  signUp: async (email: string, password: string, metadata?: Record<string, any>) => {
+  signUp: async (email: string, password: string, metadata?: Record<string, unknown>) => {
     try {
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -253,7 +253,7 @@ export const db = {
     hints_used?: number
   ) => {
     return withRetry(async () => {
-      const updateData: any = {
+      const updateData: Record<string, unknown> = {
         user_id: userId,
         challenge_id: challengeId,
         status,
@@ -367,7 +367,7 @@ export const db = {
     status: 'not_started' | 'in_progress' | 'completed'
   ) => {
     return withRetry(async () => {
-      const updateData: any = {
+      const updateData: Record<string, unknown> = {
         user_id: userId,
         learning_path_id: learningPathId,
         status,
@@ -467,7 +467,7 @@ export const db = {
   // Health check for database connectivity
   healthCheck: async () => {
     try {
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from('challenges')
         .select('count(*)')
         .limit(1);
@@ -497,7 +497,7 @@ export const db = {
     errorMessage?: string
   ) => {
     return withRetry(async () => {
-      const attemptData: any = {
+      const attemptData: Record<string, unknown> = {
         user_id: userId,
         challenge_id: challengeId,
         success,

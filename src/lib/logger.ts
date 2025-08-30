@@ -1,5 +1,12 @@
 // Universal logger that works in both client and server environments
-let logger: any;
+interface Logger {
+  error: (message: string, meta?: Record<string, unknown>) => void;
+  warn: (message: string, meta?: Record<string, unknown>) => void;
+  info: (message: string, meta?: Record<string, unknown>) => void;
+  debug: (message: string, meta?: Record<string, unknown>) => void;
+}
+
+let logger: Logger;
 
 // Check if we're in a server environment
 const isServer = typeof window === 'undefined';
@@ -7,17 +14,17 @@ const isServer = typeof window === 'undefined';
 if (isServer) {
   // Server-side winston logger - only import on server
   logger = {
-    error: (message: string, meta?: any) => {
+    error: (message: string, meta?: Record<string, unknown>) => {
       console.error(`[ERROR] ${message}`, meta);
       // TODO: Add winston logging for production
     },
-    warn: (message: string, meta?: any) => {
+    warn: (message: string, meta?: Record<string, unknown>) => {
       console.warn(`[WARN] ${message}`, meta);
     },
-    info: (message: string, meta?: any) => {
+    info: (message: string, meta?: Record<string, unknown>) => {
       console.info(`[INFO] ${message}`, meta);
     },
-    debug: (message: string, meta?: any) => {
+    debug: (message: string, meta?: Record<string, unknown>) => {
       if (process.env.NODE_ENV !== 'production') {
         console.debug(`[DEBUG] ${message}`, meta);
       }
@@ -26,10 +33,10 @@ if (isServer) {
 } else {
   // Client-side logger (use console)
   logger = {
-    error: (message: string, meta?: any) => console.error(`[ERROR] ${message}`, meta),
-    warn: (message: string, meta?: any) => console.warn(`[WARN] ${message}`, meta),
-    info: (message: string, meta?: any) => console.info(`[INFO] ${message}`, meta),
-    debug: (message: string, meta?: any) => console.debug(`[DEBUG] ${message}`, meta),
+    error: (message: string, meta?: Record<string, unknown>) => console.error(`[ERROR] ${message}`, meta),
+    warn: (message: string, meta?: Record<string, unknown>) => console.warn(`[WARN] ${message}`, meta),
+    info: (message: string, meta?: Record<string, unknown>) => console.info(`[INFO] ${message}`, meta),
+    debug: (message: string, meta?: Record<string, unknown>) => console.debug(`[DEBUG] ${message}`, meta),
   };
 }
 
