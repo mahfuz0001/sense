@@ -88,6 +88,20 @@ export function LandingPage() {
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Link 
+                      href="/learn" 
+                      className="px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
+                    >
+                      Learning Portal
+                    </Link>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Access comprehensive programming tutorials</p>
+                  </TooltipContent>
+                </Tooltip>
+                
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Link 
                       href="/app" 
                       className="px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
                     >
