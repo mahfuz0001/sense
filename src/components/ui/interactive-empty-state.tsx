@@ -29,9 +29,16 @@ const BUTTON_VARIANTS = {
   animate: { y: 0, opacity: 1, transition: { duration: 0.4, delay: 0.3 } },
 };
 
-export const cn = (...classes) => classes.filter(Boolean).join(' ');
+export const cn = (...classes: (string | undefined | null | boolean)[]) => classes.filter(Boolean).join(' ');
 
-const IconContainer = memo(({ children, variant, className = '', theme }) => (
+interface IconContainerProps {
+  children: React.ReactNode;
+  variant: 'left' | 'center' | 'right';
+  className?: string;
+  theme?: 'light' | 'dark' | 'neutral';
+}
+
+const IconContainer = memo(({ children, variant, className = '', theme }: IconContainerProps) => (
   <motion.div
     variants={ICON_VARIANTS[variant]}
     className={cn(
@@ -54,7 +61,12 @@ const IconContainer = memo(({ children, variant, className = '', theme }) => (
 ));
 IconContainer.displayName = "IconContainer";
 
-const MultiIconDisplay = memo(({ icons, theme }) => {
+interface MultiIconDisplayProps {
+  icons: React.ReactNode[];
+  theme?: 'light' | 'dark' | 'neutral';
+}
+
+const MultiIconDisplay = memo(({ icons, theme }: MultiIconDisplayProps) => {
   if (!icons || icons.length < 3) return null;
 
   return (
@@ -73,7 +85,11 @@ const MultiIconDisplay = memo(({ icons, theme }) => {
 });
 MultiIconDisplay.displayName = "MultiIconDisplay";
 
-const Background = ({ theme }) => (
+interface BackgroundProps {
+  theme?: 'light' | 'dark' | 'neutral';
+}
+
+const Background = ({ theme }: BackgroundProps) => (
   <div
     aria-hidden="true"
     className="absolute inset-0 opacity-0 group-hover:opacity-[0.02] transition-opacity duration-500"
@@ -84,7 +100,26 @@ const Background = ({ theme }) => (
   />
 );
 
-export const EmptyState = forwardRef(({
+interface ActionProps {
+  label: string;
+  onClick: () => void;
+  disabled?: boolean;
+  icon?: React.ReactNode;
+}
+
+interface EmptyStateProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onDrag' | 'onDragEnd' | 'onDragStart' | 'onAnimationStart' | 'onAnimationEnd'> {
+  title: string;
+  description?: string;
+  icons?: React.ReactNode[];
+  action?: ActionProps;
+  variant?: 'default' | 'subtle' | 'error';
+  size?: 'sm' | 'default' | 'lg';
+  theme?: 'light' | 'dark' | 'neutral';
+  isIconAnimated?: boolean;
+  className?: string;
+}
+
+export const EmptyState = forwardRef<HTMLDivElement, EmptyStateProps>(({
   title,
   description,
   icons,
@@ -107,7 +142,7 @@ export const EmptyState = forwardRef(({
     lg: "p-12"
   };
 
-  const getVariantClasses = (variant, theme) => {
+  const getVariantClasses = (variant: 'default' | 'subtle' | 'error', theme: 'light' | 'dark' | 'neutral') => {
     const variants = {
       default: {
         light: "bg-white border-dashed border-2 border-gray-300 hover:border-gray-400 hover:bg-gray-50/50",
@@ -128,7 +163,7 @@ export const EmptyState = forwardRef(({
     return variants[variant][theme];
   };
 
-  const getTextClasses = (type, size, theme) => {
+  const getTextClasses = (type: 'title' | 'description', size: 'sm' | 'default' | 'lg', theme: 'light' | 'dark' | 'neutral') => {
     const sizes = {
       title: {
         sm: "text-base",
@@ -158,7 +193,7 @@ export const EmptyState = forwardRef(({
     return cn(sizes[type][size], colors[type][theme], "font-semibold transition-colors duration-200");
   };
 
-  const getButtonClasses = (size, theme) => {
+  const getButtonClasses = (size: 'sm' | 'default' | 'lg', theme: 'light' | 'dark' | 'neutral') => {
     const sizeClasses = {
       sm: "text-xs px-3 py-1.5",
       default: "text-sm px-4 py-2",

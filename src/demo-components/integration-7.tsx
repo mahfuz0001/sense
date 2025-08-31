@@ -46,15 +46,42 @@ const Button = React.forwardRef<
     size?: string;
   }
 >(({ className, asChild = false, variant, size, ...props }, ref) => {
-  const Comp = asChild ? motion.div : "button";
   // Basic styling to mimic the original look
   const baseClasses =
     "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50";
   const variantClasses =
     "border border-input bg-transparent hover:bg-accent hover:text-accent-foreground";
   const sizeClasses = "h-9 px-3 py-2";
+  
+  if (asChild) {
+    const { 
+      onDrag, 
+      onDragEnd, 
+      onDragStart, 
+      onAnimationStart, 
+      onAnimationEnd,
+      onToggle,
+      form,
+      formAction,
+      formEncType,
+      formMethod,
+      formNoValidate,
+      formTarget,
+      disabled,
+      type,
+      value,
+      ...safeProps 
+    } = props;
+    return (
+      <motion.div
+        className={cn(baseClasses, variantClasses, sizeClasses, className)}
+        {...(safeProps as Omit<React.HTMLAttributes<HTMLDivElement>, 'onDrag' | 'onDragEnd' | 'onDragStart' | 'onAnimationStart' | 'onAnimationEnd'>)}
+      />
+    );
+  }
+  
   return (
-    <Comp
+    <button
       className={cn(baseClasses, variantClasses, sizeClasses, className)}
       ref={ref}
       {...props}

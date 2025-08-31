@@ -107,7 +107,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return false;
       }
 
-      if (data.user) {
+      if (data?.user) {
         toast.success('Welcome back!');
         return true;
       }
