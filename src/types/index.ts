@@ -42,8 +42,13 @@ export interface LearningPath {
   title: string;
   description: string;
   order_index: number;
-  challenges: Challenge[];
+  challenges: string[]; // Array of challenge IDs
+  estimated_hours: number;
+  difficulty: 'beginner' | 'intermediate' | 'advanced';
+  prerequisites: string[];
+  learning_objectives: string[];
   created_at: string;
+  updated_at: string;
 }
 
 export interface HintRequest {
