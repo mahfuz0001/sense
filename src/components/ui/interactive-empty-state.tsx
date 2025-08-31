@@ -139,14 +139,14 @@ export const EmptyState = forwardRef<HTMLDivElement, EmptyStateProps>(({
 
   const baseClasses = "group transition-all duration-300 rounded-xl relative overflow-hidden text-center flex flex-col items-center justify-center";
 
-  const sizeClasses = {
+  const sizeClasses: Record<string, string> = {
     sm: "p-6",
     default: "p-8",
     lg: "p-12"
   };
 
   const getVariantClasses = (variant: string, theme: string) => {
-    const variants = {
+    const variants: Record<string, Record<string, string>> = {
       default: {
         light: "bg-white border-dashed border-2 border-gray-300 hover:border-gray-400 hover:bg-gray-50/50",
         dark: "bg-neutral-900 border-dashed border-2 border-neutral-700 hover:border-neutral-600 hover:bg-neutral-800/50",
@@ -163,11 +163,11 @@ export const EmptyState = forwardRef<HTMLDivElement, EmptyStateProps>(({
         neutral: "bg-stone-50 border border-red-300 bg-red-50/50 hover:bg-red-50/80"
       }
     };
-    return variants[variant][theme];
+    return variants[variant]?.[theme] || variants.default.light;
   };
 
-  const getTextClasses = (type, size, theme) => {
-    const sizes = {
+  const getTextClasses = (type: string, size: string, theme: string) => {
+    const sizes: Record<string, Record<string, string>> = {
       title: {
         sm: "text-base",
         default: "text-lg",
@@ -180,7 +180,7 @@ export const EmptyState = forwardRef<HTMLDivElement, EmptyStateProps>(({
       }
     };
 
-    const colors = {
+    const colors: Record<string, Record<string, string>> = {
       title: {
         light: "text-gray-900",
         dark: "text-neutral-100",
@@ -193,17 +193,21 @@ export const EmptyState = forwardRef<HTMLDivElement, EmptyStateProps>(({
       }
     };
 
-    return cn(sizes[type][size], colors[type][theme], "font-semibold transition-colors duration-200");
+    return cn(
+      sizes[type]?.[size] || sizes.title.default,
+      colors[type]?.[theme] || colors.title.light,
+      "font-semibold transition-colors duration-200"
+    );
   };
 
-  const getButtonClasses = (size, theme) => {
-    const sizeClasses = {
+  const getButtonClasses = (size: string, theme: string) => {
+    const sizeClasses: Record<string, string> = {
       sm: "text-xs px-3 py-1.5",
       default: "text-sm px-4 py-2",
       lg: "text-base px-6 py-3"
     };
 
-    const themeClasses = {
+    const themeClasses: Record<string, string> = {
       light: "border-gray-300 bg-white hover:bg-gray-50 text-gray-700",
       dark: "border-neutral-600 bg-neutral-800 hover:bg-neutral-700 text-neutral-200",
       neutral: "border-stone-300 bg-stone-100 hover:bg-stone-200 text-stone-700"
@@ -211,8 +215,8 @@ export const EmptyState = forwardRef<HTMLDivElement, EmptyStateProps>(({
 
     return cn(
       "inline-flex items-center gap-2 border rounded-md font-medium shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden group/button disabled:opacity-50 disabled:cursor-not-allowed",
-      sizeClasses[size],
-      themeClasses[theme]
+      sizeClasses[size] || sizeClasses.default,
+      themeClasses[theme] || themeClasses.light
     );
   };
 
@@ -225,8 +229,8 @@ export const EmptyState = forwardRef<HTMLDivElement, EmptyStateProps>(({
         aria-describedby={descriptionId}
         className={cn(
           baseClasses,
-          sizeClasses[size],
-          getVariantClasses(variant, theme),
+          sizeClasses[(size as string) || 'default'] || sizeClasses.default,
+          getVariantClasses((variant as string) || 'default', (theme as string) || 'light'),
           className
         )}
         initial="initial"

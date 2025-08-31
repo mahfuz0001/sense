@@ -10,7 +10,6 @@ import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Skeleton } from '@/components/ui/skeleton'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { 
   DropdownMenu,
@@ -23,8 +22,11 @@ import {
 import { AuthProvider, useAuth } from '@/hooks/useAuth'
 import { AuthModal } from '@/components/auth/AuthModal'
 import { ChallengeInterface } from '@/components/challenge/ChallengeInterface'
+import { PricingSection } from '@/components/pricing/PricingSection'
+import { LearningPaths } from '@/components/learning/LearningPaths'
 import type { Challenge } from '@/types'
-import { mockChallenges as challenges } from '@/data/mockData'
+import { mockChallenges } from '@/data/mockData'
+import { realChallenges, realLearningPaths } from '@/data/realChallenges'
 
 function AppContent() {
   const { user, loading, signOut } = useAuth()
@@ -33,6 +35,7 @@ function AppContent() {
   const [selectedCategory, setSelectedCategory] = useState<string>('all')
   const [searchQuery, setSearchQuery] = useState('')
   const [currentChallenge, setCurrentChallenge] = useState<Challenge | null>(null)
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'challenges' | 'paths' | 'pricing'>('dashboard')
 
   const handleStartChallenge = (challenge: Challenge) => {
     setCurrentChallenge(challenge)
@@ -188,6 +191,9 @@ function AppContent() {
     )
   }
 
+  // Combine all challenges for a comprehensive experience
+  const challenges = [...mockChallenges, ...realChallenges]
+  
   const userProgress = challenges.map(challenge => ({
     ...challenge,
     status: Math.random() > 0.7 ? 'completed' : Math.random() > 0.4 ? 'in_progress' : 'not_started'
@@ -301,6 +307,38 @@ function AppContent() {
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Navigation Tabs */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-8"
+        >
+          <div className="flex space-x-1 bg-gray-100 dark:bg-gray-800 p-1 rounded-lg max-w-md">
+            {[
+              { id: 'dashboard', label: 'Dashboard', icon: Target },
+              { id: 'challenges', label: 'Challenges', icon: Play },
+              { id: 'paths', label: 'Learning Paths', icon: BookOpen },
+              { id: 'pricing', label: 'Upgrade', icon: Star },
+            ].map(({ id, label, icon: Icon }) => (
+              <button
+                key={id}
+                onClick={() => setActiveTab(id as 'dashboard' | 'challenges' | 'paths' | 'pricing')}
+                className={`flex items-center space-x-2 px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
+                  activeTab === id
+                    ? 'bg-white dark:bg-gray-700 text-blue-600 dark:text-blue-400 shadow-sm'
+                    : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
+                }`}
+              >
+                <Icon className="w-4 h-4" />
+                <span>{label}</span>
+              </button>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* Dashboard Tab */}
+        {activeTab === 'dashboard' && (
+          <>
         {/* Welcome Header */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
@@ -596,6 +634,160 @@ function AppContent() {
             </div>
           )}
         </motion.div>
+          </>
+        )}
+
+        {/* Challenges Tab */}
+        {activeTab === 'challenges' && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="space-y-8"
+          >
+            <div>
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+                Coding Challenges
+              </h2>
+              <p className="text-gray-600 dark:text-gray-300 mb-6">
+                Real-world problems that build actual development skills. No tutorials, just challenges.
+              </p>
+
+              {/* Search and Filter */}
+              <div className="flex flex-col md:flex-row gap-4 mb-6">
+                <div className="flex-1">
+                  <input
+                    type="text"
+                    placeholder="Search challenges..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full p-3 border rounded-lg"
+                  />
+                </div>
+                <div className="flex gap-2 flex-wrap">
+                  {categories.map(category => (
+                    <Button
+                      key={category}
+                      variant={selectedCategory === category ? 'default' : 'outline'}
+                      onClick={() => setSelectedCategory(category)}
+                      className="capitalize"
+                    >
+                      {category}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Challenges Grid */}
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <AnimatePresence>
+                  {filteredChallenges.map((challenge, index) => (
+                    <motion.div
+                      key={challenge.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -20 }}
+                      transition={{ delay: index * 0.1 }}
+                    >
+                      <Card className="h-full hover:shadow-lg transition-shadow duration-300">
+                        <CardHeader>
+                          <div className="flex items-start justify-between mb-2">
+                            <Badge className={`${
+                              challenge.difficulty === 'beginner' ? 'bg-green-100 text-green-800' :
+                              challenge.difficulty === 'intermediate' ? 'bg-yellow-100 text-yellow-800' :
+                              'bg-red-100 text-red-800'
+                            }`}>
+                              {challenge.difficulty}
+                            </Badge>
+                            <Badge variant={challenge.status === 'completed' ? 'default' : 'secondary'}>
+                              {challenge.status === 'completed' ? 'Solved' : 
+                               challenge.status === 'in_progress' ? 'In Progress' : 'New'}
+                            </Badge>
+                          </div>
+                          <CardTitle className="text-lg">{challenge.title}</CardTitle>
+                          <CardDescription className="text-sm line-clamp-3">
+                            {challenge.description.split('\n')[0]}
+                          </CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                          <div className="flex items-center justify-between text-sm text-gray-600">
+                            <span>{challenge.category}</span>
+                            <span>{challenge.hints.length} hints available</span>
+                          </div>
+                          <Button
+                            className="w-full"
+                            onClick={() => handleStartChallenge(challenge)}
+                            variant={challenge.status === 'completed' ? 'outline' : 'default'}
+                          >
+                            {challenge.status === 'completed' ? (
+                              <>
+                                <CheckCircle className="w-4 h-4 mr-2" />
+                                Review Solution
+                              </>
+                            ) : challenge.status === 'in_progress' ? (
+                              <>
+                                <Clock className="w-4 h-4 mr-2" />
+                                Continue Challenge
+                              </>
+                            ) : (
+                              <>
+                                <Play className="w-4 h-4 mr-2" />
+                                Start Challenge
+                              </>
+                            )}
+                          </Button>
+                        </CardContent>
+                      </Card>
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+              </div>
+
+              {filteredChallenges.length === 0 && (
+                <div className="text-center py-12">
+                  <BookOpen className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">No challenges found</h3>
+                  <p className="text-gray-500">Try adjusting your search or filter criteria.</p>
+                </div>
+              )}
+            </div>
+          </motion.div>
+        )}
+
+        {/* Learning Paths Tab */}
+        {activeTab === 'paths' && (
+          <LearningPaths 
+            paths={realLearningPaths}
+            onSelectPath={(pathId) => {
+              // Find first challenge in path and start it
+              const path = realLearningPaths.find(p => p.id === pathId);
+              if (path && path.challenges.length > 0) {
+                const firstChallenge = challenges.find(c => c.id === path.challenges[0]);
+                if (firstChallenge) {
+                  handleStartChallenge(firstChallenge);
+                }
+              }
+            }}
+            userProgress={{
+              'react-mastery': Math.random() * 60,
+              'production-ready-apis': Math.random() * 40,
+              'performance-engineering': Math.random() * 20
+            }}
+          />
+        )}
+
+        {/* Pricing Tab */}
+        {activeTab === 'pricing' && (
+          <PricingSection 
+            onSelectPlan={(planId) => {
+              if (planId === 'free') {
+                setActiveTab('challenges');
+              } else {
+                // In a real app, this would integrate with Stripe or similar
+                alert(`Selected ${planId} plan! Payment integration would be implemented here.`);
+              }
+            }}
+          />
+        )}
       </div>
     </div>
       )}
