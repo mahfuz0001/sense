@@ -157,6 +157,16 @@ export const auth = {
     }
   },
 
+  getSession: async () => {
+    try {
+      const { data, error } = await supabase.auth.getSession();
+      return { data, error };
+    } catch (err) {
+      logger.error('Get session error', { error: err });
+      return { data: null, error: { message: 'Failed to get session' } };
+    }
+  },
+
   refreshSession: async () => {
     try {
       const { data, error } = await supabase.auth.refreshSession();

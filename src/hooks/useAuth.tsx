@@ -23,46 +23,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // For demo purposes, create a mock user after a short delay
-    const timer = setTimeout(() => {
-      const mockUser: User = {
-        id: 'demo-user',
-        email: 'demo@antitutorialhell.com',
-        user_metadata: {},
-        app_metadata: {},
-        aud: 'authenticated',
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      };
-      
-      setUser(mockUser);
-      setLoading(false);
-    }, 1500);
-
     // Get initial session
     const getInitialSession = async () => {
       try {
-        const { user, error } = await auth.getCurrentUser();
+        const { data: { session }, error } = await auth.getSession();
         if (error) {
-          console.error('Error getting user:', error);
-        } else if (user) {
-          setUser(user);
-          setLoading(false);
-          clearTimeout(timer);
+          console.error('Error getting session:', error);
+        } else if (session) {
+          setSession(session);
+          setUser(session.user);
         }
       } catch (error) {
         console.error('Auth initialization error:', error);
+      } finally {
+        setLoading(false);
       }
     };
 
     getInitialSession();
 
     // Listen for auth changes
-    const { data: { subscription } } = auth.onAuthStateChange((event, session) => {
+    const { data: { subscription } } = auth.onAuthStateChange(async (event, session) => {
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
-      clearTimeout(timer);
 
       // Log auth events for security monitoring
       if (typeof window !== 'undefined') {
@@ -75,7 +59,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     return () => {
       subscription.unsubscribe();
-      clearTimeout(timer);
     };
   }, []);
 
@@ -83,67 +66,58 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       setLoading(true);
       
-      // Demo mode - accept any email/password for demonstration
-      if (email.includes('demo') || email === 'test@example.com') {
-        const mockUser: User = {
-          id: 'demo-user',
-          email: email,
-          user_metadata: {},
-          app_metadata: {},
-          aud: 'authenticated',
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        };
-        
-        setUser(mockUser);
-        toast.success('Welcome to the demo!');
-        return true;
-      }
-      
       const { data, error } = await auth.signIn(email, password);
       
       if (error) {
+        console.error('Sign in error:', error);
         toast.error(error.message || 'Failed to sign in');
         return false;
       }
 
       if (data?.user) {
+        setUser(data.user);
+        setSession(data.session);
         toast.success('Welcome back!');
         return true;
       }
 
       return false;
     } catch (error: unknown) {
-      toast.error('An unexpected error occurred');
       console.error('Sign in error:', error);
+      toast.error('An unexpected error occurred');
       return false;
     } finally {
       setLoading(false);
     }
   };
 
-  const signUp = async (email: string, _password: string): Promise<boolean> => {
+  const signUp = async (email: string, password: string): Promise<boolean> => {
     try {
       setLoading(true);
       
-      // Demo mode - accept any email/password for demonstration
-      const mockUser: User = {
-        id: 'demo-user-' + Date.now(),
-        email: email,
-        user_metadata: {},
-        app_metadata: {},
-        aud: 'authenticated',
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      };
+      const { data, error } = await auth.signUp(email, password);
       
-      setUser(mockUser);
-      toast.success('Welcome to Anti-Tutorial Hell! Demo account created.');
-      return true;
-      
+      if (error) {
+        console.error('Sign up error:', error);
+        toast.error(error.message || 'Failed to create account');
+        return false;
+      }
+
+      if (data.user) {
+        if (data.user.email_confirmed_at) {
+          setUser(data.user);
+          setSession(data.session);
+          toast.success('Welcome to Anti-Tutorial Hell!');
+        } else {
+          toast.success('Please check your email to confirm your account');
+        }
+        return true;
+      }
+
+      return false;
     } catch (error: unknown) {
-      toast.error('An unexpected error occurred');
       console.error('Sign up error:', error);
+      toast.error('An unexpected error occurred');
       return false;
     } finally {
       setLoading(false);

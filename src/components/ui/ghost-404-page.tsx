@@ -78,10 +78,10 @@ const ghostVariants = {
     rotate: [0, -5, 5, -5, 0],
     transition: {
       duration: 0.8,
-      ease: [0.43, 0.13, 0.23, 0.96] as const,
+      ease: "easeInOut" as const,
       rotate: {
         duration: 2,
-        ease: [0.25, 0.1, 0.25, 1] as const,
+        ease: "linear" as const,
         repeat: Infinity,
         repeatType: "reverse" as const
       }
