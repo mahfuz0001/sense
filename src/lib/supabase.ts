@@ -157,6 +157,16 @@ export const auth = {
     }
   },
 
+  getUser: async (accessToken: string) => {
+    try {
+      const { data, error } = await supabase.auth.getUser(accessToken);
+      return { data, error };
+    } catch (err) {
+      logger.error('Get user with token error', { error: err });
+      return { data: null, error: { message: 'Failed to get user with token' } };
+    }
+  },
+
   getSession: async () => {
     try {
       const { data, error } = await supabase.auth.getSession();
@@ -433,6 +443,84 @@ export const db = {
           hintLevel, 
           error: error.message 
         });
+      }
+      
+      return { data, error };
+    });
+  },
+
+  // User profiles management
+  getUserProfile: async (userId: string) => {
+    return withRetry(async () => {
+      const { data, error } = await supabase
+        .from('user_profiles')
+        .select('*')
+        .eq('user_id', userId)
+        .single();
+      
+      if (error && error.code !== 'PGRST116') { // Not found is ok
+        logger.error('Failed to get user profile', { userId, error: error.message });
+      }
+      
+      return { data, error };
+    });
+  },
+
+  createUserProfile: async (profileData: {
+    user_id: string;
+    display_name?: string;
+    bio?: string;
+    experience_level?: 'beginner' | 'intermediate' | 'advanced';
+    preferred_categories?: string[];
+    onboarding_completed?: boolean;
+    onboarding_step?: number;
+  }) => {
+    return withRetry(async () => {
+      const { data, error } = await supabase
+        .from('user_profiles')
+        .insert(profileData)
+        .select()
+        .single();
+      
+      if (error) {
+        logger.error('Failed to create user profile', { 
+          userId: profileData.user_id, 
+          error: error.message 
+        });
+      } else {
+        logger.info('User profile created', { userId: profileData.user_id });
+      }
+      
+      return { data, error };
+    });
+  },
+
+  updateUserProfile: async (userId: string, updates: {
+    display_name?: string;
+    bio?: string;
+    experience_level?: 'beginner' | 'intermediate' | 'advanced';
+    preferred_categories?: string[];
+    onboarding_completed?: boolean;
+    onboarding_step?: number;
+  }) => {
+    return withRetry(async () => {
+      const { data, error } = await supabase
+        .from('user_profiles')
+        .update({
+          ...updates,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('user_id', userId)
+        .select()
+        .single();
+      
+      if (error) {
+        logger.error('Failed to update user profile', { 
+          userId, 
+          error: error.message 
+        });
+      } else {
+        logger.info('User profile updated', { userId });
       }
       
       return { data, error };

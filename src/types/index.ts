@@ -5,6 +5,25 @@ export interface User {
   updated_at: string;
 }
 
+export interface UserProfile {
+  id: string;
+  user_id: string;
+  display_name?: string;
+  bio?: string;
+  experience_level: 'beginner' | 'intermediate' | 'advanced';
+  preferred_categories: string[];
+  onboarding_completed: boolean;
+  onboarding_step: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface OnboardingData {
+  display_name: string;
+  experience_level: 'beginner' | 'intermediate' | 'advanced';
+  preferred_categories: string[];
+}
+
 export interface Challenge {
   id: string;
   title: string;
