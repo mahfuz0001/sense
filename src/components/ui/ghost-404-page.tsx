@@ -92,7 +92,7 @@ const ghostVariants = {
     transition: {
       y: {
         duration: 2,
-        ease: "easeInOut" as const,
+        ease: [0.25, 0.1, 0.25, 1] as const,
         repeat: Infinity,
         repeatType: "reverse" as const
       }

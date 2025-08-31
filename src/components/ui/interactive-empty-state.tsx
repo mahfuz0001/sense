@@ -56,6 +56,13 @@ const BUTTON_VARIANTS = {
 
 export const cn = (...classes: (string | undefined | null | boolean)[]) => classes.filter(Boolean).join(' ');
 
+interface IconContainerProps {
+  children: React.ReactNode;
+  variant: 'left' | 'center' | 'right';
+  className?: string;
+  theme?: 'light' | 'dark' | 'neutral';
+}
+        
 const IconContainer = memo(({ children, variant, className = '', theme }: IconContainerProps) => (
   <motion.div
     variants={ICON_VARIANTS[variant]}
@@ -79,6 +86,11 @@ const IconContainer = memo(({ children, variant, className = '', theme }: IconCo
 ));
 IconContainer.displayName = "IconContainer";
 
+interface MultiIconDisplayProps {
+  icons: React.ReactNode[];
+  theme?: 'light' | 'dark' | 'neutral';
+}
+
 const MultiIconDisplay = memo(({ icons, theme }: MultiIconDisplayProps) => {
   if (!icons || icons.length < 3) return null;
 
@@ -98,6 +110,10 @@ const MultiIconDisplay = memo(({ icons, theme }: MultiIconDisplayProps) => {
 });
 MultiIconDisplay.displayName = "MultiIconDisplay";
 
+interface BackgroundProps {
+  theme?: 'light' | 'dark' | 'neutral';
+}
+
 const Background = ({ theme }: BackgroundProps) => (
   <div
     aria-hidden="true"
@@ -109,7 +125,21 @@ const Background = ({ theme }: BackgroundProps) => (
   />
 );
 
-interface EmptyStateProps {
+interface ActionProps {
+  label: string;
+  onClick: () => void;
+  disabled?: boolean;
+  icon?: React.ReactNode;
+}
+
+interface EmptyStateProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onDrag' | 'onDragEnd' | 'onDragStart' | 'onAnimationStart' | 'onAnimationEnd'> {
+  title: string;
+  description?: string;
+  icons?: React.ReactNode[];
+  action?: ActionProps;
+  variant?: 'default' | 'subtle' | 'error';
+
+  interface EmptyStateProps {
   title?: string;
   description?: string;
   icons?: ReactNode[];
@@ -120,7 +150,7 @@ interface EmptyStateProps {
   isIconAnimated?: boolean;
   className?: string;
   [key: string]: unknown;
-}
+
 
 export const EmptyState = forwardRef<HTMLDivElement, EmptyStateProps>(({
   title,

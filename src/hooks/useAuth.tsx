@@ -74,7 +74,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return false;
       }
 
-      if (data.user) {
+      if (data?.user) {
         setUser(data.user);
         setSession(data.session);
         toast.success('Welcome back!');

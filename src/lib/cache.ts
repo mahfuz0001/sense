@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { config } from './config';
 import { logger } from './logger';
 
@@ -28,7 +29,7 @@ class MemoryCache implements CacheProvider {
       return null;
     }
     
-    return item.value;
+    return item.value as T;
   }
 
   async set<T>(key: string, value: T, ttl: number = 3600): Promise<void> {
@@ -102,8 +103,12 @@ class MemoryCache implements CacheProvider {
 
 // Redis cache implementation
 class RedisCache implements CacheProvider {
-  private client: { get: (key: string) => Promise<string | null>; set: (key: string, value: string, px: number) => Promise<string>; del: (key: string) => Promise<number>; [key: string]: unknown } | null = null;
+  private client: unknown = null;
   private isConnected = false;
+
+  private get redisClient(): any {
+    return this.client as any;
+  }
 
   constructor() {
     // Only initialize Redis in server environment
@@ -126,28 +131,25 @@ class RedisCache implements CacheProvider {
         password: config.REDIS_PASSWORD,
         socket: {
           connectTimeout: 5000,
-          lazyConnect: true,
         },
-        retry_unfulfilled_commands: true,
-        retry_delay_on_failover: 100,
-      });
+      } as any);
 
-      this.client.on('error', (err: Error) => {
+      this.redisClient.on('error', (err: Error) => {
         logger.error('Redis connection error', { error: err.message });
         this.isConnected = false;
       });
 
-      this.client.on('connect', () => {
+      this.redisClient.on('connect', () => {
         logger.info('Redis connected');
         this.isConnected = true;
       });
 
-      this.client.on('disconnect', () => {
+      this.redisClient.on('disconnect', () => {
         logger.warn('Redis disconnected');
         this.isConnected = false;
       });
 
-      await this.client.connect();
+      await this.redisClient.connect();
     } catch (error) {
       logger.error('Redis initialization failed', { 
         error: error instanceof Error ? error.message : 'Unknown error' 
@@ -160,7 +162,7 @@ class RedisCache implements CacheProvider {
     if (!this.isConnected || !this.client) return null;
     
     try {
-      const value = await this.client.get(key);
+      const value = await this.redisClient.get(key);
       return value ? JSON.parse(value) : null;
     } catch (error) {
       logger.error('Redis get error', { key, error });
@@ -173,7 +175,7 @@ class RedisCache implements CacheProvider {
     
     try {
       const serialized = JSON.stringify(value);
-      await this.client.setEx(key, ttl, serialized);
+      await this.redisClient.setEx(key, ttl, serialized);
     } catch (error) {
       logger.error('Redis set error', { key, error });
     }
@@ -183,7 +185,7 @@ class RedisCache implements CacheProvider {
     if (!this.isConnected || !this.client) return;
     
     try {
-      await this.client.del(key);
+      await this.redisClient.del(key);
     } catch (error) {
       logger.error('Redis del error', { key, error });
     }
@@ -193,7 +195,7 @@ class RedisCache implements CacheProvider {
     if (!this.isConnected || !this.client) return;
     
     try {
-      await this.client.flushAll();
+      await this.redisClient.flushAll();
     } catch (error) {
       logger.error('Redis clear error', { error });
     }
@@ -203,7 +205,7 @@ class RedisCache implements CacheProvider {
     if (!this.isConnected || !this.client) return false;
     
     try {
-      const result = await this.client.exists(key);
+      const result = await this.redisClient.exists(key);
       return result === 1;
     } catch (error) {
       logger.error('Redis exists error', { key, error });
@@ -215,7 +217,7 @@ class RedisCache implements CacheProvider {
     if (!this.isConnected || !this.client) return 0;
     
     try {
-      return await this.client.incrBy(key, amount);
+      return await this.redisClient.incrBy(key, amount);
     } catch (error) {
       logger.error('Redis increment error', { key, error });
       return 0;
@@ -226,7 +228,7 @@ class RedisCache implements CacheProvider {
     if (!this.isConnected || !this.client) return;
     
     try {
-      await this.client.expire(key, ttl);
+      await this.redisClient.expire(key, ttl);
     } catch (error) {
       logger.error('Redis expire error', { key, error });
     }
@@ -236,7 +238,7 @@ class RedisCache implements CacheProvider {
     if (!this.isConnected || !this.client) return [];
     
     try {
-      return await this.client.keys(pattern);
+      return await this.redisClient.keys(pattern);
     } catch (error) {
       logger.error('Redis keys error', { pattern, error });
       return [];
@@ -368,7 +370,7 @@ export const cacheUtils = {
     memoryUsage?: Record<string, unknown>;
   }> => {
     const isRedis = cache instanceof RedisCache;
-    const connected = isRedis ? (cache as RedisCache & { isConnected: boolean }).isConnected : true;
+    const connected = isRedis ? (cache as any).isConnected : true;
     
     let keyCount: number | undefined;
     let memoryUsage: Record<string, unknown> | undefined;
@@ -378,7 +380,7 @@ export const cacheUtils = {
       keyCount = allKeys.length;
       
       if (!isRedis) {
-        memoryUsage = process.memoryUsage();
+        memoryUsage = process.memoryUsage() as Record<string, unknown>;
       }
     } catch (error) {
       logger.error('Failed to get cache stats', { error });
