@@ -5,7 +5,7 @@ const createClientLogger = () => {
     
     // In development, log to console
     if (process.env.NODE_ENV === 'development') {
-      const consoleMethod = (console as Record<string, unknown>)[level] as (...args: unknown[]) => void;
+      const consoleMethod = (console as unknown as Record<string, unknown>)[level] as (...args: unknown[]) => void;
       if (typeof consoleMethod === 'function') {
         consoleMethod(`[${timestamp}] ${level.toUpperCase()}: ${message}`, data || '');
       } else {

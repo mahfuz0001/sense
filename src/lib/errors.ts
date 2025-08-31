@@ -74,7 +74,15 @@ export class ExternalServiceError extends AppError {
 }
 
 // Error handler for API routes
-export const handleApiError = (error: unknown, context?: Record<string, unknown>) => {
+export const handleApiError = (error: unknown, context?: Record<string, unknown>): {
+  error: {
+    message: string;
+    code: string;
+    statusCode: number;
+    details?: Record<string, unknown>;
+  };
+  statusCode: number;
+} => {
   if (error instanceof AppError) {
     logger.warn('Application error', {
       message: error.message,
@@ -87,7 +95,7 @@ export const handleApiError = (error: unknown, context?: Record<string, unknown>
     return {
       error: {
         message: error.message,
-        code: error.code,
+        code: error.code || 'UNKNOWN_ERROR',
         statusCode: error.statusCode,
         ...(error.context && { details: error.context }),
       },
@@ -153,19 +161,20 @@ export const dbOperation = async <T>(
     
     if (result.error) {
       // Map common Supabase errors to custom errors
-      if (result.error.code === 'PGRST116') {
+      const error = result.error as { code?: string; message?: string };
+      if (error.code === 'PGRST116') {
         throw new NotFoundError('Resource');
       }
       
-      if (result.error.code === '23505') {
+      if (error.code === '23505') {
         throw new ConflictError('Resource already exists');
       }
       
-      if (result.error.code === '23503') {
+      if (error.code === '23503') {
         throw new ValidationError('Invalid reference');
       }
       
-      throw new DatabaseError(result.error.message || errorMessage);
+      throw new DatabaseError(error.message || errorMessage);
     }
     
     return { data: result.data, error: null };

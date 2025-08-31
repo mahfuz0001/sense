@@ -599,8 +599,18 @@ export const mockLearningPaths: LearningPath[] = [
     order_index: 1,
     challenges: mockChallenges.filter(c => 
       ['CSS & Layout', 'JavaScript Basics'].includes(c.category)
-    ),
+    ).map(c => c.id),
+    estimated_hours: 40,
+    difficulty: 'beginner',
+    prerequisites: [],
+    learning_objectives: [
+      'Master CSS Grid and Flexbox layouts',
+      'Build responsive web designs',
+      'Understand JavaScript fundamentals',
+      'Create interactive user interfaces'
+    ],
     created_at: '2024-01-01T00:00:00Z',
+    updated_at: '2024-01-01T00:00:00Z',
   },
   {
     id: 'typescript-mastery',
@@ -609,8 +619,18 @@ export const mockLearningPaths: LearningPath[] = [
     order_index: 2,
     challenges: mockChallenges.filter(c => 
       c.category.includes('TypeScript')
-    ),
+    ).map(c => c.id),
+    estimated_hours: 60,
+    difficulty: 'intermediate',
+    prerequisites: ['frontend-fundamentals'],
+    learning_objectives: [
+      'Master TypeScript type system',
+      'Build type-safe applications',
+      'Understand generic programming',
+      'Implement advanced type patterns'
+    ],
     created_at: '2024-01-01T00:00:00Z',
+    updated_at: '2024-01-01T00:00:00Z',
   },
   {
     id: 'react-expertise',
@@ -619,8 +639,18 @@ export const mockLearningPaths: LearningPath[] = [
     order_index: 3,
     challenges: mockChallenges.filter(c => 
       c.category.includes('React')
-    ),
+    ).map(c => c.id),
+    estimated_hours: 80,
+    difficulty: 'intermediate',
+    prerequisites: ['frontend-fundamentals', 'typescript-mastery'],
+    learning_objectives: [
+      'Build complex React applications',
+      'Master state management patterns',
+      'Implement custom hooks',
+      'Optimize React performance'
+    ],
     created_at: '2024-01-01T00:00:00Z',
+    updated_at: '2024-01-01T00:00:00Z',
   },
   {
     id: 'fullstack-integration',
@@ -629,7 +659,17 @@ export const mockLearningPaths: LearningPath[] = [
     order_index: 4,
     challenges: mockChallenges.filter(c => 
       c.category.includes('API')
-    ),
+    ).map(c => c.id),
+    estimated_hours: 100,
+    difficulty: 'advanced',
+    prerequisites: ['react-expertise'],
+    learning_objectives: [
+      'Design and consume REST APIs',
+      'Handle authentication and authorization',
+      'Implement real-time features',
+      'Deploy full-stack applications'
+    ],
     created_at: '2024-01-01T00:00:00Z',
+    updated_at: '2024-01-01T00:00:00Z',
   },
 ];

@@ -380,7 +380,7 @@ export const cacheUtils = {
       keyCount = allKeys.length;
       
       if (!isRedis) {
-        memoryUsage = process.memoryUsage() as Record<string, unknown>;
+        memoryUsage = process.memoryUsage() as unknown as Record<string, unknown>;
       }
     } catch (error) {
       logger.error('Failed to get cache stats', { error });

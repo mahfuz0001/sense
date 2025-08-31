@@ -26,12 +26,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Get initial session
     const getInitialSession = async () => {
       try {
-        const { data: { session }, error } = await auth.getSession();
+        const { data, error } = await auth.getSession();
         if (error) {
           console.error('Error getting session:', error);
-        } else if (session) {
-          setSession(session);
-          setUser(session.user);
+        } else if (data?.session) {
+          setSession(data.session);
+          setUser(data.session.user);
         }
       } catch (error) {
         console.error('Auth initialization error:', error);
@@ -103,7 +103,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return false;
       }
 
-      if (data.user) {
+      if (data?.user) {
         if (data.user.email_confirmed_at) {
           setUser(data.user);
           setSession(data.session);
