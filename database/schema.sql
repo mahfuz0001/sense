@@ -65,6 +65,20 @@ CREATE TABLE user_learning_path_progress (
   UNIQUE(user_id, learning_path_id)
 );
 
+-- User profiles for additional user data and onboarding tracking
+CREATE TABLE user_profiles (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE UNIQUE,
+  display_name TEXT,
+  bio TEXT,
+  experience_level TEXT CHECK (experience_level IN ('beginner', 'intermediate', 'advanced')) DEFAULT 'beginner',
+  preferred_categories TEXT[],
+  onboarding_completed BOOLEAN DEFAULT FALSE,
+  onboarding_step INTEGER DEFAULT 0,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
 -- Hints usage tracking
 CREATE TABLE hint_usage (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -82,6 +96,7 @@ ALTER TABLE user_progress ENABLE ROW LEVEL SECURITY;
 ALTER TABLE learning_paths ENABLE ROW LEVEL SECURITY;
 ALTER TABLE learning_path_challenges ENABLE ROW LEVEL SECURITY;
 ALTER TABLE user_learning_path_progress ENABLE ROW LEVEL SECURITY;
+ALTER TABLE user_profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE hint_usage ENABLE ROW LEVEL SECURITY;
 
 -- Challenges: Read access for all authenticated users
@@ -116,6 +131,16 @@ CREATE POLICY "Users can insert their own learning path progress" ON user_learni
 CREATE POLICY "Users can update their own learning path progress" ON user_learning_path_progress
   FOR UPDATE TO authenticated USING (auth.uid() = user_id);
 
+-- User Profiles: Users can only access their own profile
+CREATE POLICY "Users can view their own profile" ON user_profiles
+  FOR SELECT TO authenticated USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert their own profile" ON user_profiles
+  FOR INSERT TO authenticated WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update their own profile" ON user_profiles
+  FOR UPDATE TO authenticated USING (auth.uid() = user_id);
+
 -- Hint Usage: Users can only access their own hint usage
 CREATE POLICY "Users can view their own hint usage" ON hint_usage
   FOR SELECT TO authenticated USING (auth.uid() = user_id);
@@ -142,6 +167,9 @@ CREATE TRIGGER update_learning_paths_updated_at BEFORE UPDATE ON learning_paths
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 CREATE TRIGGER update_user_learning_path_progress_updated_at BEFORE UPDATE ON user_learning_path_progress
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_user_profiles_updated_at BEFORE UPDATE ON user_profiles
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 -- Sample data insertion

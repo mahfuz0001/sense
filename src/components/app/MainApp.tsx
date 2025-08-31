@@ -20,39 +20,56 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { AuthProvider, useAuth } from '@/hooks/useAuth'
+import { useUserProgress } from '@/hooks/useUserProgress'
+import { useUserProfile } from '@/hooks/useUserProfile'
 import { AuthModal } from '@/components/auth/AuthModal'
 import { ChallengeInterface } from '@/components/challenge/ChallengeInterface'
 import { PricingSection } from '@/components/pricing/PricingSection'
 import { LearningPaths } from '@/components/learning/LearningPaths'
+import { OnboardingFlow } from '@/components/onboarding/OnboardingFlow'
 import type { Challenge } from '@/types'
-import { mockChallenges } from '@/data/mockData'
 import { realChallenges, realLearningPaths } from '@/data/realChallenges'
 
 function AppContent() {
   const { user, loading, signOut } = useAuth()
+  const { progress, loading: progressLoading, updateProgress } = useUserProgress()
+  const { profile, loading: profileLoading } = useUserProfile()
   const [authModalOpen, setAuthModalOpen] = useState(false)
   const [authMode, setAuthMode] = useState<'login' | 'signup'>('login')
   const [selectedCategory, setSelectedCategory] = useState<string>('all')
   const [searchQuery, setSearchQuery] = useState('')
   const [currentChallenge, setCurrentChallenge] = useState<Challenge | null>(null)
   const [activeTab, setActiveTab] = useState<'dashboard' | 'challenges' | 'paths' | 'pricing'>('dashboard')
+  const [showOnboarding, setShowOnboarding] = useState(false)
+
+  // Check if user needs onboarding
+  const needsOnboarding = user && profile && !profile.onboarding_completed
 
   const handleStartChallenge = (challenge: Challenge) => {
     setCurrentChallenge(challenge)
   }
 
-  const handleChallengeComplete = (solution: string) => {
-    // In a real app, this would save to the database
-    console.log('Challenge completed with solution:', solution)
-    setCurrentChallenge(null)
-    // Could show a completion modal, update user stats, etc.
+  const handleChallengeComplete = async (solution: string) => {
+    if (currentChallenge) {
+      await updateProgress(currentChallenge.id, 'completed', solution)
+      setCurrentChallenge(null)
+    }
   }
 
   const handleBackToDashboard = () => {
     setCurrentChallenge(null)
   }
 
-  if (loading) {
+  const handleOnboardingComplete = () => {
+    setShowOnboarding(false)
+  }
+
+  // Show onboarding if needed
+  if (needsOnboarding || showOnboarding) {
+    return <OnboardingFlow onComplete={handleOnboardingComplete} />
+  }
+
+  if (loading || progressLoading || profileLoading) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
         {/* Navigation Skeleton */}
@@ -191,19 +208,15 @@ function AppContent() {
     )
   }
 
-  // Combine all challenges for a comprehensive experience
-  const challenges = [...mockChallenges, ...realChallenges]
+  // Use real challenges from the database instead of combining mock + real
+  const challenges = realChallenges
   
-  const userProgress = challenges.map(challenge => ({
-    ...challenge,
-    status: Math.random() > 0.7 ? 'completed' : Math.random() > 0.4 ? 'in_progress' : 'not_started'
-  }))
-
-  const completedChallenges = userProgress.filter(c => c.status === 'completed').length
+  // Use real user progress data instead of random mock data
+  const completedChallenges = progress?.completedCount || 0
   const totalChallenges = challenges.length
-  const progressPercentage = (completedChallenges / totalChallenges) * 100
-  const streak = 7 // Mock streak data
-  const totalPoints = completedChallenges * 100 + (userProgress.filter(c => c.status === 'in_progress').length * 50)
+  const progressPercentage = totalChallenges > 0 ? (completedChallenges / totalChallenges) * 100 : 0
+  const streak = progress?.streak || 0
+  const totalPoints = progress?.totalPoints || 0
 
   const categories = ['all', ...Array.from(new Set(challenges.map(c => c.category)))]
   const filteredChallenges = userProgress.filter(challenge => {
