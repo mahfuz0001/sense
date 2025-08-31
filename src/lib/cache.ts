@@ -1,4 +1,4 @@
-import { config, isProduction } from './config';
+import { config } from './config';
 import { logger } from './logger';
 
 // Cache interface for different implementations
@@ -15,7 +15,7 @@ interface CacheProvider {
 
 // Memory cache implementation (fallback)
 class MemoryCache implements CacheProvider {
-  private cache = new Map<string, { value: any; expires: number }>();
+  private cache = new Map<string, { value: unknown; expires: number }>();
   private timers = new Map<string, NodeJS.Timeout>();
 
   async get<T>(key: string): Promise<T | null> {
@@ -102,7 +102,7 @@ class MemoryCache implements CacheProvider {
 
 // Redis cache implementation
 class RedisCache implements CacheProvider {
-  private client: any = null;
+  private client: { get: (key: string) => Promise<string | null>; set: (key: string, value: string, px: number) => Promise<string>; del: (key: string) => Promise<number>; [key: string]: unknown } | null = null;
   private isConnected = false;
 
   constructor() {
@@ -365,13 +365,13 @@ export const cacheUtils = {
     type: string;
     connected: boolean;
     keyCount?: number;
-    memoryUsage?: any;
+    memoryUsage?: Record<string, unknown>;
   }> => {
     const isRedis = cache instanceof RedisCache;
-    const connected = isRedis ? (cache as any).isConnected : true;
+    const connected = isRedis ? (cache as RedisCache & { isConnected: boolean }).isConnected : true;
     
     let keyCount: number | undefined;
-    let memoryUsage: any;
+    let memoryUsage: Record<string, unknown> | undefined;
     
     try {
       const allKeys = await cache.keys('*');

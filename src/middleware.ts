@@ -1,29 +1,88 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { RateLimiterMemory } from 'rate-limiter-flexible'
+
+// Edge-compatible rate limiter using Map
+interface RateLimitEntry {
+  count: number
+  resetTime: number
+}
+
+// Simple in-memory rate limiter compatible with Edge Runtime
+class EdgeRateLimiter {
+  private cache = new Map<string, RateLimitEntry>()
+  
+  constructor(
+    public readonly points: number,
+    public readonly duration: number, // in seconds
+    public readonly keyPrefix: string
+  ) {}
+
+  async consume(key: string): Promise<void> {
+    const now = Date.now()
+    const fullKey = `${this.keyPrefix}:${key}`
+    const entry = this.cache.get(fullKey)
+
+    // Clean up expired entries
+    if (entry && now > entry.resetTime) {
+      this.cache.delete(fullKey)
+    }
+
+    const currentEntry = this.cache.get(fullKey)
+    
+    if (!currentEntry) {
+      // First request
+      this.cache.set(fullKey, {
+        count: 1,
+        resetTime: now + (this.duration * 1000)
+      })
+      return
+    }
+
+    if (currentEntry.count >= this.points) {
+      throw {
+        msBeforeNext: currentEntry.resetTime - now,
+        totalHits: currentEntry.count
+      }
+    }
+
+    // Increment counter
+    currentEntry.count++
+    this.cache.set(fullKey, currentEntry)
+  }
+
+  async get(key: string): Promise<{ totalHits: number } | null> {
+    const fullKey = `${this.keyPrefix}:${key}`
+    const entry = this.cache.get(fullKey)
+    
+    if (!entry || Date.now() > entry.resetTime) {
+      return null
+    }
+    
+    return { totalHits: entry.count }
+  }
+
+  // Cleanup expired entries periodically
+  cleanup(): void {
+    const now = Date.now()
+    for (const [key, entry] of this.cache.entries()) {
+      if (now > entry.resetTime) {
+        this.cache.delete(key)
+      }
+    }
+  }
+}
 
 // Rate limiters for different endpoints
 const rateLimiters = {
-  general: new RateLimiterMemory({
-    keyPrefix: 'general',
-    points: 100, // Number of requests
-    duration: 60, // Per 60 seconds
-  }),
-  auth: new RateLimiterMemory({
-    keyPrefix: 'auth',
-    points: 5, // Number of auth attempts
-    duration: 900, // Per 15 minutes
-  }),
-  api: new RateLimiterMemory({
-    keyPrefix: 'api',
-    points: 50, // Number of API requests
-    duration: 60, // Per 60 seconds
-  }),
-  admin: new RateLimiterMemory({
-    keyPrefix: 'admin',
-    points: 10, // Number of admin requests
-    duration: 60, // Per 60 seconds
-  }),
+  general: new EdgeRateLimiter(100, 60, 'general'),
+  auth: new EdgeRateLimiter(5, 900, 'auth'),
+  api: new EdgeRateLimiter(50, 60, 'api'),
+  admin: new EdgeRateLimiter(10, 60, 'admin'),
 }
+
+// Periodic cleanup (run every 5 minutes)
+setInterval(() => {
+  Object.values(rateLimiters).forEach(limiter => limiter.cleanup())
+}, 5 * 60 * 1000)
 
 // Get client IP address
 function getClientIP(request: NextRequest): string {
@@ -62,7 +121,7 @@ export async function middleware(request: NextRequest) {
   try {
     await rateLimiter.consume(clientIP)
   } catch (rejRes: unknown) {
-    const rejection = rejRes as { msBeforeNext: number };
+    const rejection = rejRes as { msBeforeNext: number; totalHits?: number };
     const secs = Math.round(rejection.msBeforeNext / 1000) || 1;
     
     // Return rate limit exceeded response
