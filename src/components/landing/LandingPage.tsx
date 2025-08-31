@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { motion, useAnimation } from 'framer-motion'
-import { Code2, Zap, Target, Users, ArrowRight, CheckCircle, XCircle, Play, Star, Rocket, Moon, Sun, Menu, X } from 'lucide-react'
+import { Code2, Zap, Target, Users, ArrowRight, CheckCircle, XCircle, Play, Star, Rocket, Moon, Sun, Menu, X, AlertCircle, Lightbulb } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
@@ -512,6 +512,180 @@ export function LandingPage() {
             </Tabs>
           </div>
         </section>
+
+        {/* Scrimba-Inspired Methodology Section */}
+        <section className="py-20 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-blue-900/10 dark:to-purple-900/10">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              viewport={{ once: true }}
+              className="text-center mb-16"
+            >
+              <Badge className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-100 to-purple-100 dark:from-blue-900 dark:to-purple-900 rounded-full text-blue-800 dark:text-blue-200 text-sm font-medium mb-6 shadow-lg border-0">
+                <Target className="w-4 h-4 mr-2" />
+                Inspired by Scrimba&apos;s Educational Excellence
+              </Badge>
+              
+              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
+                How We Built Our Methodology
+              </h2>
+              <p className="text-xl text-gray-600 dark:text-gray-300 max-w-4xl mx-auto leading-relaxed">
+                Just as Scrimba revolutionized coding education with interactive learning, we&apos;re eliminating tutorial dependency 
+                through challenge-based skill building. Here&apos;s the story behind our approach.
+              </p>
+            </motion.div>
+
+            <div className="grid lg:grid-cols-2 gap-16 items-center mb-16">
+              {/* Left Side - The Problem */}
+              <motion.div
+                initial={{ opacity: 0, x: -30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+                viewport={{ once: true }}
+              >
+                <div className="space-y-6">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-8 h-8 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center">
+                      <AlertCircle className="w-4 h-4 text-red-600 dark:text-red-400" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-gray-900 dark:text-white">The Tutorial Hell Problem</h3>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    <div className="flex items-start gap-3">
+                      <XCircle className="w-5 h-5 text-red-500 mt-1 flex-shrink-0" />
+                      <div>
+                        <p className="font-semibold text-gray-900 dark:text-white">Passive Learning Trap</p>
+                        <p className="text-gray-600 dark:text-gray-400 text-sm">Following tutorials creates the illusion of understanding without building real skills</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-start gap-3">
+                      <XCircle className="w-5 h-5 text-red-500 mt-1 flex-shrink-0" />
+                      <div>
+                        <p className="font-semibold text-gray-900 dark:text-white">Dependency Cycle</p>
+                        <p className="text-gray-600 dark:text-gray-400 text-sm">Learners become addicted to step-by-step guidance and can&apos;t solve new problems</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-start gap-3">
+                      <XCircle className="w-5 h-5 text-red-500 mt-1 flex-shrink-0" />
+                      <div>
+                        <p className="font-semibold text-gray-900 dark:text-white">False Confidence</p>
+                        <p className="text-gray-600 dark:text-gray-400 text-sm">Tutorial completion feels like progress but doesn&apos;t translate to real-world ability</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Right Side - Our Solution */}
+              <motion.div
+                initial={{ opacity: 0, x: 30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.8, delay: 0.4 }}
+                viewport={{ once: true }}
+              >
+                <div className="space-y-6">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-8 h-8 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
+                      <CheckCircle className="w-4 h-4 text-green-600 dark:text-green-400" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-gray-900 dark:text-white">Our Challenge-First Solution</h3>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" />
+                      <div>
+                        <p className="font-semibold text-gray-900 dark:text-white">Active Problem Solving</p>
+                        <p className="text-gray-600 dark:text-gray-400 text-sm">Start with real problems, research solutions, build understanding through struggle</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" />
+                      <div>
+                        <p className="font-semibold text-gray-900 dark:text-white">Independence Building</p>
+                        <p className="text-gray-600 dark:text-gray-400 text-sm">Learn to research, experiment, and solve problems without hand-holding</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" />
+                      <div>
+                        <p className="font-semibold text-gray-900 dark:text-white">Genuine Confidence</p>
+                        <p className="text-gray-600 dark:text-gray-400 text-sm">Each solved challenge builds real confidence because you know you can tackle new problems</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+
+            {/* The Scrimba Connection */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
+              viewport={{ once: true }}
+              className="text-center"
+            >
+              <Card className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm border-2 border-blue-200 dark:border-blue-700 shadow-2xl">
+                <CardContent className="p-8">
+                  <div className="flex items-center justify-center gap-3 mb-6">
+                    <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
+                      <Lightbulb className="w-6 h-6 text-white" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-gray-900 dark:text-white">The Scrimba Legacy</h3>
+                  </div>
+                  
+                  <blockquote className="text-lg text-gray-700 dark:text-gray-300 italic mb-6 leading-relaxed">
+                    &ldquo;Scrimba taught us that <strong>interactive beats passive</strong>. 
+                    We&apos;re taking this further: <strong>challenges beat tutorials</strong>. 
+                    Just as Scrimba made traditional coding videos obsolete, 
+                    we&apos;re making traditional coding tutorials obsolete.&rdquo;
+                  </blockquote>
+                  
+                  <div className="grid md:grid-cols-3 gap-6 text-sm">
+                    <div className="space-y-2">
+                      <div className="font-semibold text-blue-600 dark:text-blue-400">What Scrimba Gave Us</div>
+                      <ul className="text-gray-600 dark:text-gray-400 space-y-1">
+                        <li>• Interactive over passive</li>
+                        <li>• Quality over quantity</li>
+                        <li>• Community over competition</li>
+                        <li>• Skills over certificates</li>
+                      </ul>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <div className="font-semibold text-purple-600 dark:text-purple-400">What We're Adding</div>
+                      <ul className="text-gray-600 dark:text-gray-400 space-y-1">
+                        <li>• Challenges over tutorials</li>
+                        <li>• Struggle over comfort</li>
+                        <li>• Research over hand-holding</li>
+                        <li>• Independence over dependency</li>
+                      </ul>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <div className="font-semibold text-green-600 dark:text-green-400">The Result</div>
+                      <ul className="text-gray-600 dark:text-gray-400 space-y-1">
+                        <li>• Genuine problem-solving skills</li>
+                        <li>• Real developer confidence</li>
+                        <li>• Independent learning ability</li>
+                        <li>• Job-ready competence</li>
+                      </ul>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          </div>
+        </section>
+
         {/* Testimonials Section */}
         <section className="py-20 bg-white dark:bg-gray-900">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
