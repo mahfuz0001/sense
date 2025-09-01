@@ -72,7 +72,7 @@ export async function GET(request: NextRequest) {
       }
     );
   } catch (error) {
-    const { statusCode, apiError } = handleApiError(error, {
+    const { statusCode, error: apiError } = handleApiError(error, {
       endpoint: "/api/user/progress",
       action: "get",
       duration: Date.now() - start,
@@ -134,7 +134,7 @@ export async function PUT(request: NextRequest) {
 
     return NextResponse.json(data);
   } catch (error) {
-    const { statusCode, apiError } = handleApiError(error, {
+    const { statusCode, error: apiError } = handleApiError(error, {
       endpoint: "/api/user/progress",
       action: "update",
       duration: Date.now() - start,
