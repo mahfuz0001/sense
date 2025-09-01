@@ -1,10 +1,16 @@
-'use client'
+"use client";
 
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { User, Session } from '@supabase/supabase-js';
-import { auth } from '@/lib/supabase';
-import toast from 'react-hot-toast';
-import { clientSecurityLogger } from '@/lib/clientLogger';
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  ReactNode,
+} from "react";
+import { User, Session } from "@supabase/supabase-js";
+import { auth } from "@/lib/supabase";
+import toast from "react-hot-toast";
+import { clientSecurityLogger } from "@/lib/clientLogger";
 
 interface AuthContextType {
   user: User | null;
@@ -26,15 +32,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Get initial session
     const getInitialSession = async () => {
       try {
-        const { data: { session }, error } = await auth.getSession();
+        const { data, error } = await auth.getSession();
         if (error) {
-          console.error('Error getting session:', error);
-        } else if (session) {
-          setSession(session);
-          setUser(session.user);
+          console.error("Error getting session:", error);
+        } else if (data && data.session) {
+          setSession(data.session);
+          setUser(data.session.user);
         }
       } catch (error) {
-        console.error('Auth initialization error:', error);
+        console.error("Auth initialization error:", error);
       } finally {
         setLoading(false);
       }
@@ -43,16 +49,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     getInitialSession();
 
     // Listen for auth changes
-    const { data: { subscription } } = auth.onAuthStateChange(async (event, session) => {
+    const {
+      data: { subscription },
+    } = auth.onAuthStateChange(async (event, session) => {
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
 
       // Log auth events for security monitoring
-      if (typeof window !== 'undefined') {
-        clientSecurityLogger.authAttempt(event === 'SIGNED_IN', { 
+      if (typeof window !== "undefined") {
+        clientSecurityLogger.authAttempt(event === "SIGNED_IN", {
           event,
-          userId: session?.user?.id 
+          userId: session?.user?.id,
         });
       }
     });
@@ -65,26 +73,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signIn = async (email: string, password: string): Promise<boolean> => {
     try {
       setLoading(true);
-      
+
       const { data, error } = await auth.signIn(email, password);
-      
+
       if (error) {
-        console.error('Sign in error:', error);
-        toast.error(error.message || 'Failed to sign in');
+        console.error("Sign in error:", error);
+        toast.error(error.message || "Failed to sign in");
         return false;
       }
 
       if (data?.user) {
         setUser(data.user);
         setSession(data.session);
-        toast.success('Welcome back!');
+        toast.success("Welcome back!");
         return true;
       }
 
       return false;
     } catch (error: unknown) {
-      console.error('Sign in error:', error);
-      toast.error('An unexpected error occurred');
+      console.error("Sign in error:", error);
+      toast.error("An unexpected error occurred");
       return false;
     } finally {
       setLoading(false);
@@ -94,30 +102,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signUp = async (email: string, password: string): Promise<boolean> => {
     try {
       setLoading(true);
-      
+
       const { data, error } = await auth.signUp(email, password);
-      
+
       if (error) {
-        console.error('Sign up error:', error);
-        toast.error(error.message || 'Failed to create account');
+        console.error("Sign up error:", error);
+        toast.error(error.message || "Failed to create account");
         return false;
       }
 
-      if (data.user) {
+      if (data && data.user) {
         if (data.user.email_confirmed_at) {
           setUser(data.user);
           setSession(data.session);
-          toast.success('Welcome to Anti-Tutorial Hell!');
+          toast.success("Welcome to Anti-Tutorial Hell!");
         } else {
-          toast.success('Please check your email to confirm your account');
+          toast.success("Please check your email to confirm your account");
         }
         return true;
       }
 
       return false;
     } catch (error: unknown) {
-      console.error('Sign up error:', error);
-      toast.error('An unexpected error occurred');
+      console.error("Sign up error:", error);
+      toast.error("An unexpected error occurred");
       return false;
     } finally {
       setLoading(false);
@@ -128,15 +136,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       setLoading(true);
       const { error } = await auth.signOut();
-      
+
       if (error) {
-        toast.error(error.message || 'Failed to sign out');
+        toast.error(error.message || "Failed to sign out");
       } else {
-        toast.success('Signed out successfully');
+        toast.success("Signed out successfully");
       }
     } catch (error: unknown) {
-      toast.error('An unexpected error occurred');
-      console.error('Sign out error:', error);
+      toast.error("An unexpected error occurred");
+      console.error("Sign out error:", error);
     } finally {
       setLoading(false);
     }
@@ -151,17 +159,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     signOut,
   };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 }

@@ -24,15 +24,15 @@ const envSchema = z.object({
   NEXTAUTH_URL: z.string().url().optional(),
 
   // Rate Limiting Configuration
-  RATE_LIMIT_WINDOW_MS: z.string().transform(Number).default("60000"),
-  RATE_LIMIT_MAX_REQUESTS: z.string().transform(Number).default("100"),
+  RATE_LIMIT_WINDOW_MS: z.string().transform(Number).default(60000),
+  RATE_LIMIT_MAX_REQUESTS: z.string().transform(Number).default(100),
 
   // Logging Configuration
   LOG_LEVEL: z.enum(["error", "warn", "info", "debug"]).default("info"),
   LOG_TO_FILE: z
     .string()
     .transform((val) => val === "true")
-    .default("false"),
+    .default(false),
 
   // WebAuthn Configuration
   WEBAUTHN_RP_NAME: z.string().default("Anti-Tutorial Hell"),
@@ -62,15 +62,15 @@ const envSchema = z.object({
   ENABLE_ANALYTICS: z
     .string()
     .transform((val) => val === "true")
-    .default("false"),
+    .default(false),
   ENABLE_CACHING: z
     .string()
     .transform((val) => val === "true")
-    .default("false"),
+    .default(false),
   ENABLE_DEBUG_MODE: z
     .string()
     .transform((val) => val === "true")
-    .default("false"),
+    .default(false),
 });
 
 // Parse and validate environment variables

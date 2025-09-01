@@ -1,9 +1,9 @@
-import type { Challenge, LearningPath } from '../types';
+import type { Challenge, LearningPath } from "../types";
 
 export const mockChallenges: Challenge[] = [
   {
-    id: 'responsive-grid-layout',
-    title: 'Responsive Three-Column Grid',
+    id: "responsive-grid-layout",
+    title: "Responsive Three-Column Grid",
     description: `Create a responsive three-column grid layout that adapts to different screen sizes. 
 
 **Requirements:**
@@ -13,8 +13,8 @@ export const mockChallenges: Challenge[] = [
 - Ensure the layout works on screens from 320px to 1200px+
 
 **No tutorials here!** You need to research CSS Grid properties and figure out how to make it responsive. The goal is to learn by doing, not by following step-by-step instructions.`,
-    difficulty: 'beginner',
-    category: 'CSS & Layout',
+    difficulty: "beginner",
+    category: "CSS & Layout",
     starting_code: `/* Create your responsive grid layout here */
 .grid-container {
   /* Your CSS goes here */
@@ -47,21 +47,21 @@ export const mockChallenges: Challenge[] = [
 }`,
     test_cases: [
       {
-        id: 'test-1',
-        description: 'Uses CSS Grid display property',
-        expected_output: 'Grid layout implemented',
+        id: "test-1",
+        description: "Uses CSS Grid display property",
+        expected_output: "Grid layout implemented",
         hidden: false,
       },
       {
-        id: 'test-2',
-        description: 'Creates three equal columns',
-        expected_output: 'Three equal columns created',
+        id: "test-2",
+        description: "Creates three equal columns",
+        expected_output: "Three equal columns created",
         hidden: false,
       },
       {
-        id: 'test-3',
-        description: 'Includes responsive behavior',
-        expected_output: 'Responsive design implemented',
+        id: "test-3",
+        description: "Includes responsive behavior",
+        expected_output: "Responsive design implemented",
         hidden: false,
       },
     ],
@@ -71,11 +71,11 @@ export const mockChallenges: Challenge[] = [
       "For responsiveness, you'll need media queries. What should happen on smaller screens?",
       "The 'fr' unit in CSS Grid represents a fraction of available space. How can you use this for equal columns?",
     ],
-    created_at: '2024-01-01T00:00:00Z',
+    created_at: "2024-01-01T00:00:00Z",
   },
   {
-    id: 'typescript-form-validation',
-    title: 'User Authentication Form',
+    id: "typescript-form-validation",
+    title: "User Authentication Form",
     description: `Build a robust user authentication form with TypeScript validation.
 
 **Requirements:**
@@ -86,8 +86,8 @@ export const mockChallenges: Challenge[] = [
 - Use TypeScript strictly - no 'any' types allowed!
 
 **The Anti-Tutorial Hell Way:** Figure out TypeScript's type system yourself. Read the docs, experiment, and build understanding through trial and error.`,
-    difficulty: 'intermediate',
-    category: 'TypeScript & Forms',
+    difficulty: "intermediate",
+    category: "TypeScript & Forms",
     starting_code: `// Create your TypeScript interfaces and validation logic
 interface FormData {
   // Define your form data structure
@@ -169,27 +169,27 @@ async function handleSubmit(event: Event) {
 }`,
     test_cases: [
       {
-        id: 'test-1',
-        description: 'Defines proper TypeScript interfaces',
-        expected_output: 'Interfaces defined correctly',
+        id: "test-1",
+        description: "Defines proper TypeScript interfaces",
+        expected_output: "Interfaces defined correctly",
         hidden: false,
       },
       {
-        id: 'test-2',
-        description: 'Implements email validation',
-        expected_output: 'Email validation working',
+        id: "test-2",
+        description: "Implements email validation",
+        expected_output: "Email validation working",
         hidden: false,
       },
       {
-        id: 'test-3',
-        description: 'Implements password validation',
-        expected_output: 'Password validation working',
+        id: "test-3",
+        description: "Implements password validation",
+        expected_output: "Password validation working",
         hidden: false,
       },
       {
-        id: 'test-4',
-        description: 'Handles form submission properly',
-        expected_output: 'Form submission handled',
+        id: "test-4",
+        description: "Handles form submission properly",
+        expected_output: "Form submission handled",
         hidden: true,
       },
     ],
@@ -199,11 +199,11 @@ async function handleSubmit(event: Event) {
       "Regular expressions can help with email validation. Research the email regex pattern.",
       "Event handling in TypeScript requires proper type assertions. What type is event.target?",
     ],
-    created_at: '2024-01-02T00:00:00Z',
+    created_at: "2024-01-02T00:00:00Z",
   },
   {
-    id: 'react-todo-state-management',
-    title: 'Interactive Todo List',
+    id: "react-todo-state-management",
+    title: "Interactive Todo List",
     description: `Build a fully functional todo list with React state management.
 
 **Requirements:**
@@ -215,8 +215,8 @@ async function handleSubmit(event: Event) {
 - Use proper React patterns and hooks
 
 **Learn by Doing:** No step-by-step guide here. Research React hooks, state management patterns, and figure out the best approach for your component architecture.`,
-    difficulty: 'intermediate',
-    category: 'React Components',
+    difficulty: "intermediate",
+    category: "React Components",
     starting_code: `import React, { useState, useEffect } from 'react';
 
 interface Todo {
@@ -350,33 +350,33 @@ function TodoList() {
 export default TodoList;`,
     test_cases: [
       {
-        id: 'test-1',
-        description: 'Component renders without errors',
-        expected_output: 'Component rendered',
+        id: "test-1",
+        description: "Component renders without errors",
+        expected_output: "Component rendered",
         hidden: false,
       },
       {
-        id: 'test-2',
-        description: 'Can add new todos',
-        expected_output: 'Todo addition working',
+        id: "test-2",
+        description: "Can add new todos",
+        expected_output: "Todo addition working",
         hidden: false,
       },
       {
-        id: 'test-3',
-        description: 'Can toggle todo completion',
-        expected_output: 'Todo toggle working',
+        id: "test-3",
+        description: "Can toggle todo completion",
+        expected_output: "Todo toggle working",
         hidden: false,
       },
       {
-        id: 'test-4',
-        description: 'Can delete todos',
-        expected_output: 'Todo deletion working',
+        id: "test-4",
+        description: "Can delete todos",
+        expected_output: "Todo deletion working",
         hidden: false,
       },
       {
-        id: 'test-5',
-        description: 'Filtering works correctly',
-        expected_output: 'Todo filtering working',
+        id: "test-5",
+        description: "Filtering works correctly",
+        expected_output: "Todo filtering working",
         hidden: true,
       },
     ],
@@ -386,11 +386,11 @@ export default TodoList;`,
       "Think about when to save to localStorage - probably whenever the todos array changes.",
       "For filtering, you'll need to compute derived state based on your filter value.",
     ],
-    created_at: '2024-01-03T00:00:00Z',
+    created_at: "2024-01-03T00:00:00Z",
   },
   {
-    id: 'api-data-fetching',
-    title: 'API Data Fetching',
+    id: "api-data-fetching",
+    title: "API Data Fetching",
     description: `Implement robust API data fetching with proper error handling and loading states.
 
 **Requirements:**
@@ -401,8 +401,8 @@ export default TodoList;`,
 - Display data in a user-friendly format
 
 **The Challenge:** Build this without tutorials. Research fetch API, async/await, error handling, and React hooks. Learn to read documentation and solve problems independently.`,
-    difficulty: 'advanced',
-    category: 'API Integration',
+    difficulty: "advanced",
+    category: "API Integration",
     starting_code: `// Implement robust API data fetching
 interface ApiData {
   // Define your data structure
@@ -551,33 +551,33 @@ function DataDisplay() {
 export default DataDisplay;`,
     test_cases: [
       {
-        id: 'test-1',
-        description: 'Handles async operations correctly',
-        expected_output: 'Async handling implemented',
+        id: "test-1",
+        description: "Handles async operations correctly",
+        expected_output: "Async handling implemented",
         hidden: false,
       },
       {
-        id: 'test-2',
-        description: 'Implements proper error handling',
-        expected_output: 'Error handling working',
+        id: "test-2",
+        description: "Implements proper error handling",
+        expected_output: "Error handling working",
         hidden: false,
       },
       {
-        id: 'test-3',
-        description: 'Shows loading states',
-        expected_output: 'Loading states implemented',
+        id: "test-3",
+        description: "Shows loading states",
+        expected_output: "Loading states implemented",
         hidden: false,
       },
       {
-        id: 'test-4',
-        description: 'Implements retry logic',
-        expected_output: 'Retry logic working',
+        id: "test-4",
+        description: "Implements retry logic",
+        expected_output: "Retry logic working",
         hidden: true,
       },
       {
-        id: 'test-5',
-        description: 'Caches responses appropriately',
-        expected_output: 'Caching implemented',
+        id: "test-5",
+        description: "Caches responses appropriately",
+        expected_output: "Caching implemented",
         hidden: true,
       },
     ],
@@ -587,49 +587,93 @@ export default DataDisplay;`,
       "Error boundaries in React can catch errors, but you also need to handle network errors.",
       "Think about when to show loading states and how to prevent race conditions.",
     ],
-    created_at: '2024-01-04T00:00:00Z',
+    created_at: "2024-01-04T00:00:00Z",
   },
 ];
 
 export const mockLearningPaths: LearningPath[] = [
   {
-    id: 'frontend-fundamentals',
-    title: 'Frontend Fundamentals',
-    description: 'Master the core skills of frontend development through hands-on challenges. No tutorials, just real problems to solve.',
+    id: "frontend-fundamentals",
+    title: "Frontend Fundamentals",
+    description:
+      "Master the core skills of frontend development through hands-on challenges. No tutorials, just real problems to solve.",
     order_index: 1,
-    challenges: mockChallenges.filter(c => 
-      ['CSS & Layout', 'JavaScript Basics'].includes(c.category)
-    ),
-    created_at: '2024-01-01T00:00:00Z',
+    challenges: mockChallenges
+      .filter((c) => ["CSS & Layout", "JavaScript Basics"].includes(c.category))
+      .map((c) => c.id),
+    estimated_hours: 20,
+    difficulty: "beginner",
+    prerequisites: [],
+    learning_objectives: [
+      "Understand core HTML, CSS, and JavaScript concepts",
+      "Build responsive layouts",
+      "Apply best practices in frontend development",
+    ],
+    created_at: "2024-01-01T00:00:00Z",
+    updated_at: "2024-01-01T00:00:00Z",
   },
   {
-    id: 'typescript-mastery',
-    title: 'TypeScript Mastery',
-    description: 'Build type-safe applications and learn advanced TypeScript patterns through challenging projects.',
+    id: "typescript-mastery",
+    title: "TypeScript Mastery",
+    description:
+      "Build type-safe applications and learn advanced TypeScript patterns through challenging projects.",
     order_index: 2,
-    challenges: mockChallenges.filter(c => 
-      c.category.includes('TypeScript')
-    ),
-    created_at: '2024-01-01T00:00:00Z',
+    challenges: mockChallenges
+      .filter((c) => c.category.includes("TypeScript"))
+      .map((c) => c.id),
+    estimated_hours: 25,
+    difficulty: "intermediate",
+    prerequisites: ["frontend-fundamentals"],
+    learning_objectives: [
+      "Master TypeScript types and interfaces",
+      "Apply strict type safety in real projects",
+      "Understand advanced TypeScript patterns",
+    ],
+    created_at: "2024-01-01T00:00:00Z",
+    updated_at: "2024-01-01T00:00:00Z",
   },
   {
-    id: 'react-expertise',
-    title: 'React Expertise',
-    description: 'Master React component design, state management, and advanced patterns through real-world challenges.',
+    id: "react-expertise",
+    title: "React Expertise",
+    description:
+      "Master React component design, state management, and advanced patterns through real-world challenges.",
     order_index: 3,
-    challenges: mockChallenges.filter(c => 
-      c.category.includes('React')
-    ),
-    created_at: '2024-01-01T00:00:00Z',
+    challenges: mockChallenges
+      .filter((c) => c.category.includes("React"))
+      .map((c) => c.id),
+    estimated_hours: 30,
+    difficulty: "intermediate",
+    prerequisites: ["frontend-fundamentals"],
+    learning_objectives: [
+      "Build complex React components",
+      "Manage state effectively",
+      "Apply advanced React patterns",
+    ],
+    created_at: "2024-01-01T00:00:00Z",
+    updated_at: "2024-01-01T00:00:00Z",
   },
   {
-    id: 'fullstack-integration',
-    title: 'Full-Stack Integration',
-    description: 'Learn to integrate frontend and backend systems, handle APIs, and build complete applications.',
+    id: "fullstack-integration",
+    title: "Full-Stack Integration",
+    description:
+      "Learn to integrate frontend and backend systems, handle APIs, and build complete applications.",
     order_index: 4,
-    challenges: mockChallenges.filter(c => 
-      c.category.includes('API')
-    ),
-    created_at: '2024-01-01T00:00:00Z',
+    challenges: mockChallenges
+      .filter((c) => c.category.includes("API"))
+      .map((c) => c.id),
+    estimated_hours: 35,
+    difficulty: "advanced",
+    prerequisites: [
+      "frontend-fundamentals",
+      "typescript-mastery",
+      "react-expertise",
+    ],
+    learning_objectives: [
+      "Integrate frontend and backend systems",
+      "Handle API requests and responses",
+      "Build and deploy full-stack applications",
+    ],
+    created_at: "2024-01-01T00:00:00Z",
+    updated_at: "2024-01-01T00:00:00Z",
   },
 ];

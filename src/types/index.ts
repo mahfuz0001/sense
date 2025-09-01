@@ -10,7 +10,7 @@ export interface UserProfile {
   user_id: string;
   display_name?: string;
   bio?: string;
-  experience_level: 'beginner' | 'intermediate' | 'advanced';
+  experience_level: "beginner" | "intermediate" | "advanced";
   preferred_categories: string[];
   onboarding_completed: boolean;
   onboarding_step: number;
@@ -20,7 +20,7 @@ export interface UserProfile {
 
 export interface OnboardingData {
   display_name: string;
-  experience_level: 'beginner' | 'intermediate' | 'advanced';
+  experience_level: "beginner" | "intermediate" | "advanced";
   preferred_categories: string[];
 }
 
@@ -28,7 +28,7 @@ export interface Challenge {
   id: string;
   title: string;
   description: string;
-  difficulty: 'beginner' | 'intermediate' | 'advanced';
+  difficulty: "beginner" | "intermediate" | "advanced";
   category: string;
   starting_code: string;
   solution_code: string;
@@ -48,7 +48,7 @@ export interface UserProgress {
   id: string;
   user_id: string;
   challenge_id: string;
-  status: 'not_started' | 'in_progress' | 'completed';
+  status: "not_started" | "in_progress" | "completed";
   current_code: string;
   attempts: number;
   completed_at: string | null;
@@ -63,7 +63,7 @@ export interface LearningPath {
   order_index: number;
   challenges: string[]; // Array of challenge IDs
   estimated_hours: number;
-  difficulty: 'beginner' | 'intermediate' | 'advanced';
+  difficulty: "beginner" | "intermediate" | "advanced";
   prerequisites: string[];
   learning_objectives: string[];
   created_at: string;
@@ -100,22 +100,22 @@ export interface TestResult {
 export interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
-  mode: 'login' | 'signup';
-  onModeChange: (mode: 'login' | 'signup') => void;
+  mode: "login" | "signup";
+  onModeChange: (mode: "login" | "signup") => void;
 }
 
 export interface DifficultyBadgeProps {
-  difficulty: Challenge['difficulty'];
-  size?: 'sm' | 'md' | 'lg';
+  difficulty: Challenge["difficulty"];
+  size?: "sm" | "md" | "lg";
 }
 
 export interface CategoryBadgeProps {
   category: string;
-  size?: 'sm' | 'md' | 'lg';
+  size?: "sm" | "md" | "lg";
 }
 
 export interface ProgressIndicatorProps {
   current: number;
   total: number;
-  size?: 'sm' | 'md' | 'lg';
+  size?: "sm" | "md" | "lg";
 }
