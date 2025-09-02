@@ -35,7 +35,7 @@ const envSchema = z.object({
     .default(false),
 
   // WebAuthn Configuration
-  WEBAUTHN_RP_NAME: z.string().default("Anti-Tutorial Hell"),
+  WEBAUTHN_RP_NAME: z.string().default("Sense"),
   WEBAUTHN_RP_ID: z.string().default("localhost"),
   WEBAUTHN_ORIGIN: z.string().url().default("http://localhost:3000"),
 

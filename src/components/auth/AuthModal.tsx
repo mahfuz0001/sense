@@ -124,7 +124,7 @@ export function AuthModal({ isOpen, onClose, mode, onToggleMode }: AuthModalProp
                     <CardDescription>
                       {mode === 'login' 
                         ? 'Sign in to continue your coding journey'
-                        : 'Join the Anti-Tutorial Hell movement'
+                        : 'Join the Sense learning platform'
                       }
                     </CardDescription>
                   </div>

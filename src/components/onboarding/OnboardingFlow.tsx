@@ -52,7 +52,7 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
   const steps = [
     {
       id: "welcome",
-      title: "Welcome to Anti-Tutorial Hell!",
+      title: "Welcome to Sense!",
       description: "Let's get you set up for success",
       icon: <CheckCircle className="w-8 h-8 text-green-500" />,
     },
