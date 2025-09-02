@@ -145,8 +145,16 @@ export function MarkdownRenderer({ content, className = "" }: MarkdownRendererPr
       .replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-gray-900 dark:text-white">$1</strong>')
       // Italic text
       .replace(/\*(.*?)\*/g, '<em class="italic">$1</em>')
-      // Inline code
-      .replace(/`(.*?)`/g, '<code class="bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 px-1.5 py-0.5 rounded text-xs font-mono">$1</code>')
+      // Inline code - escape HTML entities to display tags as text
+      .replace(/`(.*?)`/g, (match, code) => {
+        const escapedCode = code
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+        return `<code class="bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 px-1.5 py-0.5 rounded text-xs font-mono">${escapedCode}</code>`;
+      })
       // Links
       .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-blue-600 dark:text-blue-400 hover:underline" target="_blank" rel="noopener noreferrer">$1</a>')
   }
