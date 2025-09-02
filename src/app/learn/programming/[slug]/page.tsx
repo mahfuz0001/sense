@@ -14,93 +14,9 @@ import {
   getPrevProgrammingLesson,
   programmingLessons 
 } from '@/data/programmingFundamentals'
-
-// Simple markdown-like content renderer for programming lessons
-function ContentRenderer({ content }: { content: string }) {
-  // Convert markdown-like syntax to JSX
-  const renderContent = (text: string) => {
-    const lines = text.split('\n')
-    const elements: JSX.Element[] = []
-    let currentCodeBlock = ''
-    let inCodeBlock = false
-    
-    for (let i = 0; i < lines.length; i++) {
-      const line = lines[i]
-      
-      // Handle code blocks
-      if (line.trim().startsWith('```')) {
-        if (inCodeBlock) {
-          // End code block
-          elements.push(
-            <div key={i} className="my-6">
-              <pre className="bg-gray-900 dark:bg-gray-800 text-gray-100 p-4 rounded-lg overflow-x-auto">
-                <code>{currentCodeBlock.trim()}</code>
-              </pre>
-            </div>
-          )
-          currentCodeBlock = ''
-          inCodeBlock = false
-        } else {
-          // Start code block
-          inCodeBlock = true
-        }
-        continue
-      }
-      
-      if (inCodeBlock) {
-        currentCodeBlock += line + '\n'
-        continue
-      }
-      
-      // Handle headings
-      if (line.startsWith('# ')) {
-        elements.push(
-          <h1 key={i} className="text-3xl font-bold text-gray-900 dark:text-white my-6">
-            {line.substring(2)}
-          </h1>
-        )
-      } else if (line.startsWith('## ')) {
-        elements.push(
-          <h2 key={i} className="text-2xl font-semibold text-gray-900 dark:text-white my-5">
-            {line.substring(3)}
-          </h2>
-        )
-      } else if (line.startsWith('### ')) {
-        elements.push(
-          <h3 key={i} className="text-xl font-semibold text-gray-900 dark:text-white my-4">
-            {line.substring(4)}
-          </h3>
-        )
-      } else if (line.startsWith('- ')) {
-        // Handle list items
-        elements.push(
-          <li key={i} className="text-gray-700 dark:text-gray-300 ml-6 my-1">
-            {line.substring(2)}
-          </li>
-        )
-      } else if (line.trim() === '') {
-        // Empty line
-        elements.push(<br key={i} />)
-      } else if (line.trim()) {
-        // Regular paragraph
-        const processedLine = line
-          .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-          .replace(/\*(.*?)\*/g, '<em>$1</em>')
-          .replace(/`(.*?)`/g, '<code class="bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded text-sm">$1</code>')
-        
-        elements.push(
-          <p key={i} className="text-gray-700 dark:text-gray-300 my-4 leading-relaxed" 
-             dangerouslySetInnerHTML={{ __html: processedLine }}>
-          </p>
-        )
-      }
-    }
-    
-    return elements
-  }
-  
-  return <div className="prose prose-lg max-w-none">{renderContent(content)}</div>
-}
+import { MarkdownRenderer } from '@/components/ui/MarkdownRenderer'
+import { SyntaxGuide } from '@/components/ui/SyntaxGuide'
+import { PracticeMode } from '@/components/ui/PracticeMode'
 
 export default function ProgrammingLessonPage() {
   const params = useParams()
@@ -217,6 +133,11 @@ export default function ProgrammingLessonPage() {
                   </div>
                 </CardContent>
               </Card>
+              
+              {/* Syntax Guide */}
+              <div className="mt-6">
+                <SyntaxGuide />
+              </div>
             </div>
           </div>
 
@@ -248,7 +169,18 @@ export default function ProgrammingLessonPage() {
               {/* Lesson Content */}
               <Card className="mb-8">
                 <CardContent className="p-8">
-                  <ContentRenderer content={lesson.content} />
+                  <MarkdownRenderer content={lesson.content} />
+                  
+                  {/* Interactive Practice */}
+                  {lesson.codeExample && (
+                    <div className="mt-6">
+                      <PracticeMode
+                        initialCode={lesson.codeExample}
+                        language="javascript"
+                        showPreview={true}
+                      />
+                    </div>
+                  )}
                 </CardContent>
               </Card>
 
