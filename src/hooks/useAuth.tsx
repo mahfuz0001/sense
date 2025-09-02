@@ -115,7 +115,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (data.user.email_confirmed_at) {
           setUser(data.user);
           setSession(data.session);
-          toast.success("Welcome to Anti-Tutorial Hell!");
+          toast.success("Welcome to Sense!");
         } else {
           toast.success("Please check your email to confirm your account");
         }

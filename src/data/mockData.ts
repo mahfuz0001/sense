@@ -85,7 +85,7 @@ export const mockChallenges: Challenge[] = [
 - Show validation errors to the user
 - Use TypeScript strictly - no 'any' types allowed!
 
-**The Anti-Tutorial Hell Way:** Figure out TypeScript's type system yourself. Read the docs, experiment, and build understanding through trial and error.`,
+**The Sense Way:** Figure out TypeScript's type system yourself. Read the docs, experiment, and build understanding through trial and error.`,
     difficulty: "intermediate",
     category: "TypeScript & Forms",
     starting_code: `// Create your TypeScript interfaces and validation logic

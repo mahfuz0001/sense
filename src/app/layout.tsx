@@ -4,12 +4,12 @@ import { Toaster } from 'react-hot-toast'
 import { ThemeProvider } from '@/components/theme-provider'
 
 export const metadata: Metadata = {
-  title: 'Anti-Tutorial Hell - Learn by Doing, Not Following',
+  title: 'Sense - Learn by Doing, Not Following',
   description: 'Stop following step-by-step tutorials. Start solving real problems. Build the confidence to tackle any coding challenge independently.',
   keywords: 'coding, programming, challenges, learning, tutorial hell, education',
-  authors: [{ name: 'Anti-Tutorial Hell Team' }],
+  authors: [{ name: 'Sense Team' }],
   openGraph: {
-    title: 'Anti-Tutorial Hell - Learn by Doing, Not Following',
+    title: 'Sense - Learn by Doing, Not Following',
     description: 'Stop following step-by-step tutorials. Start solving real problems.',
     type: 'website',
   },
