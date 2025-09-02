@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Code2, BookOpen, ArrowRight, CheckCircle, Play, Star, Users, Lightbulb, Monitor } from 'lucide-react'
+import { Code2, BookOpen, ArrowRight, CheckCircle, Play, Star, Lightbulb, Monitor } from 'lucide-react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'

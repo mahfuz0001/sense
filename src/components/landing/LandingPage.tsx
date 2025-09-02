@@ -1,10 +1,9 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { motion, useAnimation } from 'framer-motion'
-import { Code2, Zap, Target, Users, ArrowRight, CheckCircle, XCircle, Play, Star, Rocket, Moon, Sun, Menu, X } from 'lucide-react'
+import { Code2, Zap, Target, Users, ArrowRight, CheckCircle, XCircle, Play, Star, Rocket, Menu, X } from 'lucide-react'
 import Link from 'next/link'
-import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -15,7 +14,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { Skeleton } from '@/components/ui/skeleton'
 
-export function LandingPage() {
+export const LandingPage = React.memo(() => {
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
@@ -716,4 +715,6 @@ export function LandingPage() {
       </div>
     </TooltipProvider>
   )
-}
+})
+
+LandingPage.displayName = 'LandingPage'
