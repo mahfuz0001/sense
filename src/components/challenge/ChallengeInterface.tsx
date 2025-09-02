@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge'
 import { CodeEditor } from './CodeEditor'
 import { TestRunner } from './TestRunner'
 import { HintSystem } from './HintSystem'
+import { MarkdownRenderer } from '@/components/ui/MarkdownRenderer'
 import type { Challenge } from '@/types'
 
 interface ChallengeInterfaceProps {
@@ -138,11 +139,7 @@ export function ChallengeInterface({ challenge, onBack, onComplete }: ChallengeI
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="prose prose-sm max-w-none">
-                  {challenge.description.split('\n').map((line, index) => (
-                    <p key={index} className="mb-2">{line}</p>
-                  ))}
-                </div>
+                <MarkdownRenderer content={challenge.description} />
               </CardContent>
             </Card>
 
