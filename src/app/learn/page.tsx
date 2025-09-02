@@ -45,8 +45,9 @@ const languages = [
     lessons: 42,
     duration: '10 hours',
     difficulty: 'Beginner',
-    available: false,
-    color: 'from-blue-500 to-purple-500'
+    available: true,
+    color: 'from-blue-500 to-purple-500',
+    prerequisiteCompleted: false
   },
   {
     id: 'javascript',
@@ -57,8 +58,9 @@ const languages = [
     lessons: 38,
     duration: '15 hours',
     difficulty: 'Intermediate',
-    available: false,
-    color: 'from-yellow-500 to-orange-500'
+    available: true,
+    color: 'from-yellow-500 to-orange-500',
+    prerequisiteCompleted: false
   },
   {
     id: 'react',
@@ -100,7 +102,7 @@ const languages = [
 
 const stats = [
   { label: 'Active Learners', value: '12,000+', icon: Users },
-  { label: 'Courses Available', value: '6+', icon: BookOpen },
+  { label: 'Courses Available', value: '4+', icon: BookOpen },
   { label: 'Hours of Content', value: '67+', icon: Clock },
   { label: 'Success Rate', value: '94%', icon: Star }
 ]
