@@ -273,7 +273,7 @@ export function PracticeMode({
                     <div className="h-[300px] flex items-center justify-center bg-gray-50 dark:bg-gray-800">
                       <div className="text-center">
                         <Play className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-                        <p className="text-sm text-gray-500">Click "Run" to see your code in action</p>
+                        <p className="text-sm text-gray-500">Click &quot;Run&quot; to see your code in action</p>
                       </div>
                     </div>
                   )}

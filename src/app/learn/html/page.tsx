@@ -1,13 +1,13 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Code2, BookOpen, ArrowRight, Clock, CheckCircle, Play, Star, Users } from 'lucide-react'
+import { Code2, BookOpen, ArrowRight, CheckCircle, Play, Star, Users } from 'lucide-react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
-import { htmlCategories, getLessonsByCategory } from '@/data/htmlTutorial'
+import { htmlCategories } from '@/data/htmlTutorial'
 
 export default function HTMLTutorialPage() {
   const totalLessons = htmlCategories.reduce((acc, category) => acc + category.lessons.length, 0)
