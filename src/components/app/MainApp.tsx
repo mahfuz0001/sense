@@ -155,7 +155,7 @@ function AppContent() {
                   <Code2 className="w-6 h-6 text-white" />
                 </div>
                 <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                  Anti-Tutorial Hell
+                  Sense
                 </span>
               </div>
 
@@ -193,7 +193,7 @@ function AppContent() {
           >
             <Card>
               <CardHeader className="text-center">
-                <CardTitle>Welcome to Anti-Tutorial Hell</CardTitle>
+                <CardTitle>Welcome to Sense</CardTitle>
                 <CardDescription>
                   Sign in to start solving real coding challenges
                 </CardDescription>
@@ -251,6 +251,15 @@ function AppContent() {
     totalChallenges > 0 ? (completedChallenges / totalChallenges) * 100 : 0;
   const streak = progress?.streak || 0;
   const totalPoints = progress?.totalPoints || 0;
+
+  // Calculate learning module statistics
+  const learningModules = ["HTML", "CSS", "JavaScript", "Programming"];
+  const completedModules = learningModules.filter(module => {
+    const moduleChallenge = challenges.find(c => 
+      c.category.toLowerCase().includes(module.toLowerCase())
+    );
+    return moduleChallenge && challengeStatusMap[moduleChallenge.id] === "completed";
+  }).length;
 
   const categories = [
     "all",
@@ -337,7 +346,7 @@ function AppContent() {
                     <Code2 className="w-6 h-6 text-white" />
                   </div>
                   <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                    Anti-Tutorial Hell
+                    Sense
                   </span>
                 </motion.div>
 
@@ -351,6 +360,13 @@ function AppContent() {
                       {totalPoints} points
                     </span>
                   </Badge>
+
+                  <Link href="/learn">
+                    <Button variant="ghost" className="hidden md:flex items-center space-x-2">
+                      <BookOpen className="w-4 h-4" />
+                      <span>Learning Portal</span>
+                    </Button>
+                  </Link>
 
                   <Link href="/admin">
                     <Button variant="ghost" size="icon">
@@ -478,7 +494,7 @@ function AppContent() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1 }}
-                  className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"
+                  className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8"
                 >
                   <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
                     <CardContent className="p-6">
@@ -547,6 +563,24 @@ function AppContent() {
                         </div>
                         <div className="p-3 bg-orange-200 rounded-full">
                           <Calendar className="w-6 h-6 text-orange-700" />
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="bg-gradient-to-br from-indigo-50 to-indigo-100 border-indigo-200">
+                    <CardContent className="p-6">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <div className="text-3xl font-bold text-indigo-900">
+                            {completedModules}/{learningModules.length}
+                          </div>
+                          <div className="text-sm text-indigo-700">
+                            Learning Modules
+                          </div>
+                        </div>
+                        <div className="p-3 bg-indigo-200 rounded-full">
+                          <BookOpen className="w-6 h-6 text-indigo-700" />
                         </div>
                       </div>
                     </CardContent>
