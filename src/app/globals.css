@@ -40,7 +40,7 @@
     --color-3: 210 100% 63%;
     --color-4: 195 100% 63%;
     --color-5: 90 100% 63%;
-    --elegant-font: 'Great Vibes';
+    --elegant-font: "Great Vibes";
   }
 
   .dark {
@@ -161,49 +161,89 @@
 
 @theme inline {
   @keyframes fadeSlideIn {
-  to {
-    opacity: 1;
-    filter: blur(0px);
-    transform: translateY(0px);
+    to {
+      opacity: 1;
+      filter: blur(0px);
+      transform: translateY(0px);
     }
   }
   @keyframes slideRightIn {
-  to {
-    opacity: 1;
-    filter: blur(0px);
-    transform: translateX(0px);
+    to {
+      opacity: 1;
+      filter: blur(0px);
+      transform: translateX(0px);
     }
   }
   @keyframes testimonialIn {
-  to {
-    opacity: 1;
-    filter: blur(0px);
-    transform: translateY(0px) scale(1);
+    to {
+      opacity: 1;
+      filter: blur(0px);
+      transform: translateY(0px) scale(1);
     }
   }
   @keyframes iconBounce {
-  0%, 100% {
-    transform: translateY(0);
+    0%,
+    100% {
+      transform: translateY(0);
     }
-  20% {
-    transform: translateY(-0.3em);
+    20% {
+      transform: translateY(-0.3em);
     }
-  40% {
-    transform: translateY(0);
+    40% {
+      transform: translateY(0);
     }
-  60% {
-    transform: translateY(-0.1em);
+    60% {
+      transform: translateY(-0.1em);
     }
-  80% {
-    transform: translateY(0);
+    80% {
+      transform: translateY(0);
     }
   }
   @keyframes rainbow {
-  0% {
-    background-position: 0%;
+    0% {
+      background-position: 0%;
     }
-  100% {
-    background-position: 200%;
+    100% {
+      background-position: 200%;
     }
+  }
+}
+@layer utilities {
+  .delay-100 {
+    animation-delay: 100ms;
+  }
+  .delay-200 {
+    animation-delay: 200ms;
+  }
+  .delay-300 {
+    animation-delay: 300ms;
+  }
+  .delay-500 {
+    animation-delay: 500ms;
+  }
+  .delay-700 {
+    animation-delay: 700ms;
+  }
+
+  .fade-top-lg {
+    mask-image: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 1) 8rem);
+  }
+
+  .animate-in {
+    animation-duration: 1000ms;
+    animation-fill-mode: forwards;
+    animation-timing-function: ease-out;
+  }
+}
+
+@layer base {
+  :root {
+    --brand: 27 96% 61%;
+    --brand-foreground: 31 97% 72%;
+  }
+
+  .dark {
+    --brand: 31 97% 72%;
+    --brand-foreground: 27 96% 61%;
   }
 }
