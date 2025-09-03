@@ -871,18 +871,18 @@ export const LandingPage = React.memo(() => {
           </div>
         </section>
 
-        {/* <CTASection
+        <CTASection
           badge={{
-            text: "Get started",
+            text: "Ready to Start Learning?",
           }}
-          title="Start building with Launch UI"
-          description="Get started with Launch UI and build your landing page in no time"
+          title="Transform Your Coding Skills Today"
+          description="Join thousands of developers who are mastering modern web development with our interactive tutorials and real-world challenges."
           action={{
-            text: "Get Started",
-            href: "/docs",
+            text: "Start Learning Now",
+            href: "/learn",
             variant: "default",
           }}
-        /> */}
+        />
 
         {/* Footer */}
         <footer className="py-12 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">

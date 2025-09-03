@@ -1,12 +1,33 @@
 'use client'
 
-import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, Eye, EyeOff, Mail, Lock, User } from 'lucide-react'
+import { X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+import SecureInput from '@/components/ui/secure-input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { useAuth } from '@/hooks/useAuth'
+import { useForm } from '@/hooks/useForm'
+import { LoadingSpinner } from '@/components/ui/loading'
+import { z } from 'zod'
+
+// Form schemas
+const loginSchema = z.object({
+  email: z.string().email('Please enter a valid email address'),
+  password: z.string().min(8, 'Password must be at least 8 characters'),
+});
+
+const signupSchema = z.object({
+  name: z.string().min(2, 'Name must be at least 2 characters'),
+  email: z.string().email('Please enter a valid email address'),
+  password: z.string().min(8, 'Password must be at least 8 characters'),
+  confirmPassword: z.string(),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ["confirmPassword"],
+});
+
+type LoginFormData = z.infer<typeof loginSchema>;
+type SignupFormData = z.infer<typeof signupSchema>;
 
 interface AuthModalProps {
   isOpen: boolean
@@ -16,83 +37,36 @@ interface AuthModalProps {
 }
 
 export function AuthModal({ isOpen, onClose, mode, onToggleMode }: AuthModalProps) {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
-  const [name, setName] = useState('')
-  const [showPassword, setShowPassword] = useState(false)
-  const [loading, setLoading] = useState(false)
-  const [errors, setErrors] = useState<Record<string, string>>({})
+  const { signIn, signUp } = useAuth();
 
-  const { signIn, signUp } = useAuth()
-
-  const validateForm = () => {
-    const newErrors: Record<string, string> = {}
-
-    if (!email) {
-      newErrors.email = 'Email is required'
-    } else if (!/\S+@\S+\.\S+/.test(email)) {
-      newErrors.email = 'Email is invalid'
-    }
-
-    if (!password) {
-      newErrors.password = 'Password is required'
-    } else if (password.length < 8) {
-      newErrors.password = 'Password must be at least 8 characters'
-    }
-
-    if (mode === 'signup') {
-      if (!name) {
-        newErrors.name = 'Name is required'
-      }
-      if (password !== confirmPassword) {
-        newErrors.confirmPassword = 'Passwords do not match'
-      }
-    }
-
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    
-    if (!validateForm()) return
-
-    setLoading(true)
-
-    try {
-      let success = false
-      
-      if (mode === 'login') {
-        success = await signIn(email, password)
-      } else {
-        success = await signUp(email, password)
-      }
-
+  const loginForm = useForm<LoginFormData>({
+    schema: loginSchema,
+    onSubmit: async (data) => {
+      const success = await signIn(data.email, data.password);
       if (success) {
-        onClose()
-        setEmail('')
-        setPassword('')
-        setConfirmPassword('')
-        setName('')
-        setErrors({})
+        onClose();
+        loginForm.reset();
       }
-    } catch (error) {
-      console.error('Auth error:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
+    },
+  });
+
+  const signupForm = useForm<SignupFormData>({
+    schema: signupSchema,
+    onSubmit: async (data) => {
+      const success = await signUp(data.email, data.password);
+      if (success) {
+        onClose();
+        signupForm.reset();
+      }
+    },
+  });
+
+  const form = mode === 'login' ? loginForm : signupForm;
 
   const handleClose = () => {
-    onClose()
-    setEmail('')
-    setPassword('')
-    setConfirmPassword('')
-    setName('')
-    setErrors({})
-  }
+    onClose();
+    form.reset();
+  };
 
   return (
     <AnimatePresence>
@@ -138,127 +112,112 @@ export function AuthModal({ isOpen, onClose, mode, onToggleMode }: AuthModalProp
               </CardHeader>
 
               <CardContent>
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={form.handleSubmit} className="space-y-4">
                   {mode === 'signup' && (
                     <div>
-                      <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                      <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                         Full Name
                       </label>
-                      <div className="relative">
-                        <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                        <Input
-                          id="name"
-                          type="text"
-                          value={name}
-                          onChange={(e) => setName(e.target.value)}
-                          className="pl-10"
-                          placeholder="Enter your full name"
-                        />
-                      </div>
-                      {errors.name && (
-                        <p className="mt-1 text-sm text-red-600">{errors.name}</p>
+                      <SecureInput
+                        id="name"
+                        type="text"
+                        value={(signupForm.values as SignupFormData).name || ''}
+                        onChange={(e) => signupForm.setValue('name', e.target.value)}
+                        placeholder="Enter your full name"
+                        sanitize={true}
+                        showValidation={true}
+                      />
+                      {signupForm.errors.name && (
+                        <p className="mt-1 text-sm text-red-600">{signupForm.errors.name}</p>
                       )}
                     </div>
                   )}
 
                   <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                       Email Address
                     </label>
-                    <div className="relative">
-                      <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                      <Input
-                        id="email"
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="pl-10"
-                        placeholder="Enter your email"
-                      />
-                    </div>
-                    {errors.email && (
-                      <p className="mt-1 text-sm text-red-600">{errors.email}</p>
+                    <SecureInput
+                      id="email"
+                      variant="email"
+                      value={form.values.email || ''}
+                      onChange={(e) => form.setValue('email', e.target.value)}
+                      placeholder="Enter your email"
+                      showValidation={true}
+                    />
+                    {form.errors.email && (
+                      <p className="mt-1 text-sm text-red-600">{form.errors.email}</p>
                     )}
                   </div>
 
                   <div>
-                    <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                       Password
                     </label>
-                    <div className="relative">
-                      <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                      <Input
-                        id="password"
-                        type={showPassword ? 'text' : 'password'}
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        className="pl-10 pr-10"
-                        placeholder="Enter your password"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                      >
-                        {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                      </button>
-                    </div>
-                    {errors.password && (
-                      <p className="mt-1 text-sm text-red-600">{errors.password}</p>
+                    <SecureInput
+                      id="password"
+                      variant="password"
+                      value={form.values.password || ''}
+                      onChange={(e) => form.setValue('password', e.target.value)}
+                      placeholder="Enter your password"
+                      sanitize={false}
+                      showValidation={true}
+                    />
+                    {form.errors.password && (
+                      <p className="mt-1 text-sm text-red-600">{form.errors.password}</p>
                     )}
                   </div>
 
                   {mode === 'signup' && (
                     <div>
-                      <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
+                      <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                         Confirm Password
                       </label>
-                      <div className="relative">
-                        <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                        <Input
-                          id="confirmPassword"
-                          type="password"
-                          value={confirmPassword}
-                          onChange={(e) => setConfirmPassword(e.target.value)}
-                          className="pl-10"
-                          placeholder="Confirm your password"
-                        />
-                      </div>
-                      {errors.confirmPassword && (
-                        <p className="mt-1 text-sm text-red-600">{errors.confirmPassword}</p>
+                      <SecureInput
+                        id="confirmPassword"
+                        variant="password"
+                        value={(signupForm.values as SignupFormData).confirmPassword || ''}
+                        onChange={(e) => signupForm.setValue('confirmPassword', e.target.value)}
+                        placeholder="Confirm your password"
+                        sanitize={false}
+                        showValidation={true}
+                      />
+                      {signupForm.errors.confirmPassword && (
+                        <p className="mt-1 text-sm text-red-600">{signupForm.errors.confirmPassword}</p>
                       )}
                     </div>
                   )}
 
-                  <Button type="submit" className="w-full" disabled={loading}>
-                    {loading ? (
-                      <div className="flex items-center space-x-2">
-                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                        <span>{mode === 'login' ? 'Signing In...' : 'Creating Account...'}</span>
-                      </div>
+                  <Button 
+                    type="submit" 
+                    className="w-full"
+                    disabled={form.isSubmitting || !form.isValid}
+                  >
+                    {form.isSubmitting ? (
+                      <LoadingSpinner size="sm" text={mode === 'login' ? 'Signing in...' : 'Creating account...'} />
                     ) : (
                       mode === 'login' ? 'Sign In' : 'Create Account'
                     )}
                   </Button>
 
-                  <div className="text-center">
-                    <button
-                      type="button"
-                      onClick={onToggleMode}
-                      className="text-sm text-blue-600 hover:text-blue-700"
-                    >
-                      {mode === 'login' 
-                        ? "Don't have an account? Sign up"
-                        : 'Already have an account? Sign in'
-                      }
-                    </button>
-                  </div>
-
-                  {mode === 'signup' && (
-                    <p className="text-xs text-gray-500 text-center">
-                      By creating an account, you agree to escape tutorial hell and build real skills.
+                  <div className="text-center space-y-4">
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      {mode === 'login' ? "Don't have an account? " : "Already have an account? "}
+                      <button
+                        type="button"
+                        onClick={onToggleMode}
+                        className="text-blue-600 hover:text-blue-800 font-medium"
+                      >
+                        {mode === 'login' ? 'Sign up' : 'Sign in'}
+                      </button>
                     </p>
-                  )}
+                    
+                    {mode === 'signup' && (
+                      <p className="text-xs text-gray-500 text-center">
+                        By creating an account, you agree to escape tutorial hell and build real skills.
+                      </p>
+                    )}
+                  </div>
                 </form>
               </CardContent>
             </Card>
