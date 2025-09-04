@@ -51,7 +51,6 @@ export default function HTMLLessonPage() {
   
   const currentCategory = htmlCategories.find(cat => cat.id === lesson.category)
   const categoryLessons = currentCategory ? getLessonsByCategory(lesson.category) : []
-  const lessonIndex = categoryLessons.findIndex(l => l.id === lesson.id)
   
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-red-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">

@@ -183,7 +183,7 @@ export default function HTMLTutorialPage() {
                   </CardHeader>
                   <CardContent className="p-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {category.lessons.slice(0, 6).map((lessonId, lessonIndex) => (
+                      {category.lessons.slice(0, 6).map((lessonId) => (
                         <Link 
                           key={lessonId}
                           href={`/learn/html/${lessonId}`}

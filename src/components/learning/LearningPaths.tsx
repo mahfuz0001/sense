@@ -1,13 +1,12 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, Clock, Star, Target, Trophy, BookOpen, Zap, Brain, Rocket, Award, TrendingUp, Users, Eye, Play, Pause, RotateCcw, Filter, Search, Grid, List } from 'lucide-react';
+import { ArrowRight, Clock, Star, Target, Trophy, BookOpen, Zap, Brain, Rocket, TrendingUp, Users, Eye, Play, Search, Grid, List } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import type { LearningPath } from '@/types';
 
@@ -22,8 +21,6 @@ export const LearningPaths = React.memo(({ paths, onSelectPath, userProgress = {
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>('all')
   const [sortBy, setSortBy] = useState<string>('recommended')
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
-  const [isAutoPlay, setIsAutoPlay] = useState(false)
-  const [selectedCategory, setSelectedCategory] = useState<string>('all')
 
   // Advanced filtering and sorting logic
   const filteredAndSortedPaths = useMemo(() => {
@@ -31,10 +28,7 @@ export const LearningPaths = React.memo(({ paths, onSelectPath, userProgress = {
       const matchesSearch = path.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                            path.description.toLowerCase().includes(searchQuery.toLowerCase())
       const matchesDifficulty = selectedDifficulty === 'all' || path.difficulty === selectedDifficulty
-      const matchesCategory = selectedCategory === 'all' || path.challenges.some(challenge => 
-        challenge.toLowerCase().includes(selectedCategory.toLowerCase())
-      )
-      return matchesSearch && matchesDifficulty && matchesCategory
+      return matchesSearch && matchesDifficulty
     })
 
     const sortedFiltered = [...filtered];
@@ -56,7 +50,7 @@ export const LearningPaths = React.memo(({ paths, onSelectPath, userProgress = {
     })
 
     return sortedFiltered
-  }, [paths, searchQuery, selectedDifficulty, selectedCategory, sortBy, userProgress])
+  }, [paths, searchQuery, selectedDifficulty, sortBy, userProgress])
   // Enhanced UI helper functions
   const getDifficultyColor = useCallback((difficulty: string) => {
     switch (difficulty) {
