@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { ArrowRight, CheckCircle, Clock, PlayCircle, BookOpen, Target, Users, Zap } from 'lucide-react'
+import { ArrowRight, CheckCircle, PlayCircle, BookOpen, Target, Users, Zap } from 'lucide-react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -157,7 +157,7 @@ export default function CSSTutorialPage() {
                   </CardHeader>
                   <CardContent className="p-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {category.lessons.slice(0, 6).map((lessonId, lessonIndex) => (
+                      {category.lessons.slice(0, 6).map((lessonId) => (
                         <Link 
                           key={lessonId}
                           href={`/learn/css/${lessonId}`}

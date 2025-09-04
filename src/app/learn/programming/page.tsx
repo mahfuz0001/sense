@@ -197,7 +197,7 @@ export default function ProgrammingFundamentalsPage() {
                   </CardHeader>
                   <CardContent className="p-6">
                     <div className="grid gap-3 mb-6">
-                      {category.lessons.slice(0, 6).map((lessonId, lessonIndex) => {
+                      {category.lessons.slice(0, 6).map((lessonId) => {
                         const lesson = programmingLessons.find(l => l.id === lessonId)
                         if (!lesson) return null
                         

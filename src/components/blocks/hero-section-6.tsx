@@ -2,6 +2,7 @@
 import { Button } from '@/components/ui/button'
 import { ArrowRight, Mail, Menu, SendHorizonal, X } from 'lucide-react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { useState } from 'react'
 import { cn } from '@/lib/utils'
 
@@ -134,14 +135,14 @@ export function HeroSection() {
                         <div className="absolute inset-0 -mx-4 rounded-3xl p-3 lg:col-span-3">
                             <div aria-hidden className="absolute z-[1] inset-0 bg-gradient-to-r from-background from-35%" />
                             <div className="relative">
-                                <img
+                                <Image
                                     className="hidden dark:block"
                                     src="https://tailark.com/_next/image?url=%2Fmusic.png&w=3840&q=75"
                                     alt="app illustration"
                                     width={2796}
                                     height={2008}
                                 />
-                                <img
+                                <Image
                                     className="dark:hidden"
                                     src="https://tailark.com/_next/image?url=%2Fmusic-light.png&w=3840&q=75"
                                     alt="app illustration"
