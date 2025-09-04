@@ -1,5 +1,6 @@
 'use client'
 
+import { useState, useMemo } from 'react'
 import { motion } from 'framer-motion'
 import { ArrowRight, CheckCircle, PlayCircle, BookOpen, Target, Users, Zap } from 'lucide-react'
 import Link from 'next/link'
@@ -7,9 +8,33 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
+import { SearchAndFilter } from '@/components/common/SearchAndFilter'
 import { cssCategories } from '@/data/cssTutorial'
 
 export default function CSSTutorialPage() {
+  const [searchQuery, setSearchQuery] = useState('')
+  const [selectedDifficulty, setSelectedDifficulty] = useState('all')
+  const [selectedCategory, setSelectedCategory] = useState('all')
+
+  // Filter categories based on search and filters
+  const filteredCategories = useMemo(() => {
+    return cssCategories.filter(category => {
+      // Category filter
+      if (selectedCategory !== 'all' && category.id !== selectedCategory) {
+        return false
+      }
+
+      // Search filter (search in title and description)
+      if (searchQuery) {
+        const query = searchQuery.toLowerCase()
+        return category.title.toLowerCase().includes(query) || 
+               category.description.toLowerCase().includes(query)
+      }
+
+      return true
+    })
+  }, [searchQuery, selectedCategory])
+
   const totalLessons = cssCategories.reduce((acc, category) => acc + category.lessons.length, 0)
   const completedLessons = 0 // This would come from user progress data
 
@@ -130,8 +155,32 @@ export default function CSSTutorialPage() {
             </p>
           </motion.div>
 
+          {/* Search and Filter */}
+          <div className="mb-8">
+            <SearchAndFilter
+              searchQuery={searchQuery}
+              onSearchChange={setSearchQuery}
+              selectedDifficulty={selectedDifficulty}
+              onDifficultyChange={setSelectedDifficulty}
+              selectedCategory={selectedCategory}
+              onCategoryChange={setSelectedCategory}
+              categories={cssCategories.map(cat => ({ id: cat.id, title: cat.title }))}
+              className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg"
+            />
+          </div>
+
+          {/* Results summary */}
+          {(searchQuery || selectedDifficulty !== 'all' || selectedCategory !== 'all') && (
+            <div className="mb-6 text-center">
+              <p className="text-gray-600 dark:text-gray-300">
+                Showing {filteredCategories.length} of {cssCategories.length} categories
+                {searchQuery && ` matching "${searchQuery}"`}
+              </p>
+            </div>
+          )}
+
           <div className="space-y-8">
-            {cssCategories.map((category, index) => (
+            {filteredCategories.map((category, index) => (
               <motion.div
                 key={category.id}
                 initial={{ opacity: 0, y: 20 }}
@@ -196,6 +245,40 @@ export default function CSSTutorialPage() {
                 </Card>
               </motion.div>
             ))}
+            
+            {/* No Results State */}
+            {filteredCategories.length === 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="text-center py-12"
+              >
+                <div className="max-w-md mx-auto">
+                  <div className="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Target className="w-8 h-8 text-gray-400" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                    No categories found
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-300 mb-4">
+                    {searchQuery 
+                      ? `No categories match "${searchQuery}". Try a different search term.`
+                      : 'No categories match your current filters. Try adjusting your selection.'
+                    }
+                  </p>
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setSearchQuery('')
+                      setSelectedDifficulty('all')
+                      setSelectedCategory('all')
+                    }}
+                  >
+                    Clear all filters
+                  </Button>
+                </div>
+              </motion.div>
+            )}
           </div>
         </div>
       </section>

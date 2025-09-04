@@ -7,7 +7,6 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import type { LearningPath } from '@/types';
 
@@ -29,10 +28,7 @@ export const LearningPaths = React.memo(({ paths, onSelectPath, userProgress = {
       const matchesSearch = path.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                            path.description.toLowerCase().includes(searchQuery.toLowerCase())
       const matchesDifficulty = selectedDifficulty === 'all' || path.difficulty === selectedDifficulty
-      const matchesCategory = selectedCategory === 'all' || path.challenges.some(challenge => 
-        challenge.toLowerCase().includes(selectedCategory.toLowerCase())
-      )
-      return matchesSearch && matchesDifficulty && matchesCategory
+      return matchesSearch && matchesDifficulty
     })
 
     const sortedFiltered = [...filtered];
