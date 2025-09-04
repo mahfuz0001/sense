@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
+import { CTASection } from '@/components/blocks/cta'
 
 const languages = [
   {
@@ -379,6 +380,20 @@ export default function LearnPage() {
           </div>
         </div>
       </section>
+
+      {/* CTA Section */}
+      <CTASection
+        badge={{
+          text: "Start Your Journey"
+        }}
+        title="Ready to Begin Learning?"
+        description="Choose your first programming language and start building real projects today. Our interactive tutorials make learning fun and effective."
+        action={{
+          text: "Start with Programming Fundamentals",
+          href: "/learn/programming",
+          variant: "default"
+        }}
+      />
     </div>
   )
 }

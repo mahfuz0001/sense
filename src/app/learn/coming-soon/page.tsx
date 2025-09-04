@@ -1,12 +1,13 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Code2, Clock, ArrowRight, Bell, Calendar, Users } from 'lucide-react'
+import { Code2, Clock, Bell, Calendar, Users } from 'lucide-react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
+import { CTASection } from '@/components/blocks/cta'
 
 const upcomingLanguages = [
   {
@@ -119,17 +120,19 @@ export default function ComingSoonPage() {
             </p>
             
             {/* Available Now CTA */}
-            <div className="bg-gradient-to-r from-green-100 to-blue-100 dark:from-green-900/20 dark:to-blue-900/20 rounded-2xl p-6 mb-8 inline-block">
-              <p className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                🌐 HTML Tutorial is Available Now!
-              </p>
-              <Link href="/learn/html">
-                <Button size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white">
-                  Start Learning HTML
-                  <ArrowRight className="ml-2 w-5 h-5" />
-                </Button>
-              </Link>
-            </div>
+            <CTASection
+              badge={{
+                text: "Available Now"
+              }}
+              title="HTML Tutorial is Ready!"
+              description="Start your web development journey with our comprehensive HTML tutorial. Perfect for beginners and those looking to refresh their skills."
+              action={{
+                text: "Start Learning HTML",
+                href: "/learn/html",
+                variant: "default"
+              }}
+              className="my-12"
+            />
           </motion.div>
         </div>
       </section>
