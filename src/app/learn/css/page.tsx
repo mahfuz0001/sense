@@ -9,6 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import { SearchAndFilter } from '@/components/common/SearchAndFilter'
+import { BookmarkButton } from '@/components/common/BookmarkButton'
 import { cssCategories } from '@/data/cssTutorial'
 
 export default function CSSTutorialPage() {
@@ -190,8 +191,8 @@ export default function CSSTutorialPage() {
               >
                 <Card className="overflow-hidden hover:shadow-xl transition-shadow duration-300">
                   <CardHeader className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20">
-                    <div className="flex items-center justify-between">
-                      <div>
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
                         <CardTitle className="text-2xl text-gray-900 dark:text-white">
                           {category.title}
                         </CardTitle>
@@ -199,9 +200,17 @@ export default function CSSTutorialPage() {
                           {category.description}
                         </CardDescription>
                       </div>
-                      <Badge variant="outline" className="text-sm">
-                        {category.lessons.length} lessons
-                      </Badge>
+                      <div className="flex items-center gap-2 ml-4">
+                        <BookmarkButton
+                          itemId={category.id}
+                          itemType="category"
+                          size="md"
+                          variant="ghost"
+                        />
+                        <Badge variant="outline" className="text-sm">
+                          {category.lessons.length} lessons
+                        </Badge>
+                      </div>
                     </div>
                   </CardHeader>
                   <CardContent className="p-6">
