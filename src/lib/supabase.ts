@@ -352,6 +352,9 @@ export const db = {
   // Enhanced challenge retrieval with caching headers
   getChallenges: async (category?: string, difficulty?: string) => {
     return withRetry(async () => {
+      // Import static challenges
+      const { allEasyChallenges } = await import("../data/easyChallenges");
+      
       let query = supabase
         .from("challenges")
         .select("*")
@@ -360,36 +363,85 @@ export const db = {
       if (category) query = query.eq("category", category);
       if (difficulty) query = query.eq("difficulty", difficulty);
 
-      const { data, error } = await query;
+      const { data: dbChallenges, error } = await query;
 
       if (error) {
-        logger.error("Failed to get challenges", {
+        logger.error("Failed to get challenges from database", {
           category,
           difficulty,
           error: error.message,
         });
+        
+        // If database fails, return only static challenges
+        let staticChallenges = allEasyChallenges;
+        
+        // Apply filters to static challenges
+        if (category) {
+          staticChallenges = staticChallenges.filter(c => c.category === category);
+        }
+        if (difficulty) {
+          staticChallenges = staticChallenges.filter(c => c.difficulty === difficulty);
+        }
+        
+        return { data: staticChallenges, error: null };
       }
 
-      return { data, error };
+      // Combine database challenges with static challenges
+      let allChallenges = [...allEasyChallenges, ...(dbChallenges || [])];
+      
+      // Apply filters to combined challenges if they weren't already applied at DB level
+      if (category && !query.toString().includes('category')) {
+        allChallenges = allChallenges.filter(c => c.category === category);
+      }
+      if (difficulty && !query.toString().includes('difficulty')) {
+        allChallenges = allChallenges.filter(c => c.difficulty === difficulty);
+      }
+      
+      // Remove duplicates by ID (database takes precedence)
+      const uniqueChallenges = allChallenges.filter((challenge, index, self) => 
+        index === self.findIndex(c => c.id === challenge.id)
+      );
+
+      logger.info("Successfully retrieved challenges", {
+        staticCount: allEasyChallenges.length,
+        dbCount: dbChallenges?.length || 0,
+        totalCount: uniqueChallenges.length,
+        category,
+        difficulty,
+      });
+
+      return { data: uniqueChallenges, error: null };
     });
   },
 
   getChallenge: async (challengeId: string) => {
     return withRetry(async () => {
-      const { data, error } = await supabase
+      // First try to get from database
+      const { data: dbChallenge, error } = await supabase
         .from("challenges")
         .select("*")
         .eq("id", challengeId)
         .single();
 
-      if (error) {
-        logger.error("Failed to get challenge", {
-          challengeId,
-          error: error.message,
-        });
+      if (!error && dbChallenge) {
+        return { data: dbChallenge, error: null };
       }
 
-      return { data, error };
+      // If not found in database, check static challenges
+      const { allEasyChallenges } = await import("../data/easyChallenges");
+      const staticChallenge = allEasyChallenges.find(c => c.id === challengeId);
+      
+      if (staticChallenge) {
+        logger.info("Challenge found in static data", { challengeId });
+        return { data: staticChallenge, error: null };
+      }
+
+      logger.error("Challenge not found", {
+        challengeId,
+        dbError: error?.message,
+      });
+
+      return { data: null, error: error || { message: "Challenge not found" } };
     });
   },
 

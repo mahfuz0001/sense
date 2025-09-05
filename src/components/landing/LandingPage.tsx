@@ -138,6 +138,20 @@ export const LandingPage = React.memo(() => {
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Link
+                      href="/challenges"
+                      className="px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
+                    >
+                      Challenges
+                    </Link>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Test your skills with coding challenges</p>
+                  </TooltipContent>
+                </Tooltip>
+
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Link
                       href="/app"
                       className="px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
                     >
@@ -185,6 +199,20 @@ export const LandingPage = React.memo(() => {
                 className="md:hidden py-4 border-t border-gray-200 dark:border-gray-700"
               >
                 <div className="flex flex-col space-y-2">
+                  <Link
+                    href="/learn"
+                    className="px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    Learning Portal
+                  </Link>
+                  <Link
+                    href="/challenges"
+                    className="px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    Challenges
+                  </Link>
                   <Link
                     href="/app"
                     className="px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
